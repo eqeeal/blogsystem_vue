@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="out-div">
     <h1 class="title">personal blog</h1>
         <div class="content-box">
             <div class="login">Login</div>
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-  name: 'Login',
+  name: 'login',
   data() {
     return {
       codeText: '',
@@ -50,17 +50,20 @@ export default {
     login(){
       if(this.inputcode.toUpperCase()===this.codeText.toUpperCase()){
         this.$http.get('/api/login/?userphone='+ this.userInfo.userphone + '&userpass=' + this.userInfo.userpass).then(res=>{
-          console.log(res)
           this.$message({
               message: '登录成功',
               type: 'success'
           })
+          //登录成功，页面跳转到首页
+          this.$router.push('/home')
         })
       } else {
         this.$message({
               message: '验证码错误',
               type: 'error'
           })
+        this.codeText = this.randomCode("canvas1", 4)
+        this.inputcode = ''
       }
     },
     // 用户注册函数
@@ -131,12 +134,18 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .el-input {
   margin-top: 15px;
 }
-body {
-  background-color: rgba(0, 153, 255, 0.3);
+.out-div {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  background-color: rgba(0, 174, 255, 0.5);
 }
 .title {
   color: rgb(0, 132, 255);
