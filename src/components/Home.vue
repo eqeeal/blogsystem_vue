@@ -5,32 +5,58 @@
     <!-- 侧边栏菜单区域 -->
     <!-- 站点信息 -->
     <div class="head-left" :width="iSCollapse ? '68px' : '189px'">
-      <img src="../assets/logo.png" width="50px" height="50px">&nbsp&nbsp
+      <img src="../assets/imgs/user1.png" class="avatar">&nbsp&nbsp
       <span v-show="!iSCollapse">my bolg</span>
     </div>
-    <!-- 博主名称 -->
+    <!-- 博主名 -->
     <div class="head-left">
-      <img src="../assets/logo.png" width="40px" height="40px">&nbsp&nbsp
+      <img src="../assets/imgs/user1.png" class="avatar">&nbsp&nbsp
       <span v-show="!iSCollapse">张三</span>
     </div>
-    <el-menu text-color="#000000" active-text-color="#3F9FFE" :unique-opened = "true" default-active='1' :collapse="iSCollapse">
-      <!-- 一级菜单 -->
+    <!-- 菜单 -->
+    <el-menu active-text-color="#3F9FFE" default-active='1-1' :collapse="iSCollapse">
       <div class="menu-title" v-show="!iSCollapse">Dashborder</div>
-      <el-menu-item class="item" index="1">
-        <i class="el-icon-menu" ></i>
-        <span slot="title">导航二</span>
+      <el-menu-item class="item" index="1-1">
+        <i class="el-icon-s-platform" ></i>
+        <span slot="title">Dashbord</span>
       </el-menu-item>
-      <el-menu-item class="item" index="2"> 
-        <i class="el-icon-menu"></i>
-        <span slot="title">导航二</span>
+      <el-menu-item class="item" index="1-2"> 
+        <i class="el-icon-edit-outline"></i>
+        <span slot="title">发布博客</span>
       </el-menu-item>
-      <el-menu-item class="item" index="3">
-        <i class="el-icon-menu"></i>
-        <span slot="title">导航二</span>
+      <div class="menu-title" v-show="!iSCollapse">管理模块</div>
+      <el-menu-item class="item" index="2-1">
+        <i class="el-icon-s-order" ></i>  
+        <span slot="title">博客管理</span>
       </el-menu-item>
-      <el-menu-item class="item" index="4">
-        <i class="el-icon-menu"></i>
-        <span slot="title">导航二</span>
+      <el-menu-item class="item" index="2-2"> 
+        <i class="el-icon-chat-dot-square"></i>
+        <span slot="title">评论管理</span>
+      </el-menu-item>
+      <el-menu-item class="item" index="2-3"> 
+        <i class="el-icon-s-management"></i>
+        <span slot="title">分类管理</span>
+      </el-menu-item>
+      <el-menu-item class="item" index="2-4"> 
+        <i class="el-icon-discount"></i>
+        <span slot="title">标签管理</span>
+      </el-menu-item>
+      <el-menu-item class="item" index="2-5"> 
+        <i class="el-icon-s-promotion"></i>
+        <span slot="title">友情链接</span>
+      </el-menu-item>
+      <div class="menu-title" v-show="!iSCollapse">系统管理</div>
+      <el-menu-item class="item" index="3-1">
+        <i class="el-icon-s-tools" ></i>
+        <span slot="title">系统配置</span>
+      </el-menu-item>
+      <el-menu-item class="item" index="3-2"> 
+        <i class="el-icon-key"></i>
+        <span slot="title">修改密码</span>
+      </el-menu-item>
+      <el-menu-item class="item" index="3-3"> 
+        <i class="el-icon-right"></i>
+        <span slot="title">安全退出</span>
       </el-menu-item>
     </el-menu>
     </el-aside>
@@ -68,6 +94,11 @@ export default {
 </script>
 
 <style scoped>
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 30px;
+}
 .el-menu {
   border: 0;
   background-color: #343a40;
@@ -89,6 +120,7 @@ export default {
 }
 .el-main {
   background-color: #E9EEF3;
+  padding: 10px;
   color: #333;
   text-align: center;
   height: 92vh;
@@ -100,17 +132,18 @@ export default {
   background-color: #343a40 !important;
   color: #c3c8d1 !important;
   font-size: 17px;
+  height: 40px;
 }
-.item:focus {
+.el-menu-item.is-active {
   color:white !important;
   background-color: #007bff !important;
   border-radius: 10px;
-  width: 179px;
-  margin: 10px;
+  display: flex;
+  justify-content: flex-start;
 }
 .head-left {
   padding: 10px 0;
-  margin: 0;
+  margin: 5px 0;
   color: white;
   display: flex;  
   justify-content: center;
@@ -135,7 +168,7 @@ export default {
   width: 100%;
   display: flex;
   justify-content: flex-end;
-  margin-right: 20px;
+  margin-right: 30px;
 }
 .menu-title {
   background-color: #343a40;
@@ -145,5 +178,6 @@ export default {
   padding-top: 25px;
   padding-left: 5px;
   font-size: 15px;
+  padding-bottom: 10px;
 }
 </style>
