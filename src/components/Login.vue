@@ -3,19 +3,18 @@
     <h1 class="title">personal blog</h1>
         <div class="content-box">
             <div class="login">Login</div>
-            <div class="user-item">
-                手机号：<br>
-                <el-input placeholder="请输入手机号"  v-model="userInfo.userphone"></el-input>
-            </div>
-            <div class="user-item">
-                密码：<br>
-                <el-input placeholder="请输入密码"  v-model="userInfo.userpass"></el-input>
-            </div>
-            <div class="user-item">
-                验证码：<br>
-                <el-input placeholder="请输入验证码" class="code" v-model="inputcode"></el-input>
+            <el-form label-position="top" label-width="80px" :model="userInfo" :rules="rules" ref="ruleForm">
+              <el-form-item label="手机号" class="user-item" prop="userphone">
+                <el-input v-model="userInfo.userphone" placeholder="请输入手机号"></el-input>
+              </el-form-item>
+              <el-form-item label="密码" class="user-item" prop="userpass">
+                <el-input v-model="userInfo.userpass" type="password" placeholder="请输入密码"></el-input>
+              </el-form-item>
+              <el-form-item label="验证码" class="user-item" prop="inputcode">
+                <el-input v-model="userInfo.inputcode" class="code" placeholder="请输入验证码"></el-input>
                 <canvas id="canvas1" width="100" height="40"></canvas>
-            </div>
+              </el-form-item>
+            </el-form>
             <button class="btn" @click="login">登录</button>
             <button class="btn" @click="regist">注册</button>
         </div>
@@ -28,13 +27,25 @@ export default {
   data() {
     return {
       codeText: '',
-      inputcode:'',
       userInfo:{
         username:'NewUser',
         userpass:'',
         userphone:'',
+        inputcode:'',
+      },
+      //表单验证规则
+      rules:{
+        userphone:[
+          {required:true,message:'请输入手机号',trigger:'blur'},
+          {min:1,max:11,message:'手机号在1-11位之间',trigger:'blur'}
+        ],
+        userpass: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ],
+        inputcode: [
+          { required: true, message: '请选输入验证码', trigger: 'blur' }
+        ],
       }
-      
     }
   },
   mounted() {
@@ -48,37 +59,47 @@ export default {
   methods: {
     // 用户登录函数
     login(){
-      if(this.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-        this.$http.get('/api/login/?userphone='+ this.userInfo.userphone + '&userpass=' + this.userInfo.userpass).then(res=>{
-          this.$message({
-              message: '登录成功',
-              type: 'success'
-          })
-          //登录成功，页面跳转到首页
-          this.$router.push('/home')
-        })
-      } else {
-        this.$message({
-              message: '验证码错误',
-              type: 'error'
-          })
-        this.codeText = this.randomCode("canvas1", 4)
-        this.inputcode = ''
-      }
+      this.$refs['ruleForm'].validate((valid) => {
+        if (valid) {
+          if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
+            this.$http.get('/api/login/?userphone='+ this.userInfo.userphone + '&userpass=' + this.userInfo.userpass).then(res=>{
+              this.$message({
+                  message: '登录成功',
+                  type: 'success'
+              })
+              //登录成功，页面跳转到首页
+              this.$router.push('/home')
+            })
+          } else {
+            this.$message({
+                  message: '验证码错误',
+                  type: 'error'
+              })
+            this.codeText = this.randomCode("canvas1", 4)
+            this.userInfo.inputcode = ''
+          }
+        } else {
+          return false;
+        }
+      })
+      
     },
     // 用户注册函数
     regist() {
-      if(this.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-        this.$http({method:'post',url:'/api/user/add',data:this.userInfo}).then(res=>{
+      if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
+        this.$http({method:'post',url:'/api/user/add',
+                    data:{userphone:this.userInfo.userphone,userpass:this.userInfo.userpass}})
+          .then(res=>{
           console.log(res)
+          let type = res.data.code === '200' ? 'success' : 'error'
           this.$message({
-              message: '注册成功',
-              type: 'success'
+              message: res.data.message,
+              type
           })
           this.codeText = this.randomCode("canvas1", 4)
           this.userphone = ''
           this.userpass = ''
-          this.inputcode = ''
+          this.userInfo.inputcode = ''
         })
       } else {
         this.$message({
@@ -129,15 +150,25 @@ export default {
       var green = parseInt(Math.random() * 256)
       var blue = parseInt(Math.random() * 256)
       return `rgb(${red},${green},${blue})`
+    },
+    // 防抖函数
+    debounce(func,wait){
+      console.log("111")
+      let timer = null
+      return function(){
+        if(timer !== null){ 
+          clearTimeout(timer)
+        }
+        timer = setTimeout(() => {
+          func.apply(this,arguments)
+        }, wait)
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.el-input {
-  margin-top: 15px;
-}
 .out-div {
   position: absolute;
   width: 100%;
@@ -177,8 +208,6 @@ export default {
   width: 150px !important;
 }
 #canvas1 {
-  position: relative;
-  top: 15px;
   float: right;
 }
 .btn {
