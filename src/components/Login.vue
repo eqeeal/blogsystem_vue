@@ -98,14 +98,14 @@ export default {
     regist() {
       if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
         this.$http({method:'post',url:'/api/user/add',
-                    data:{userphone:this.userInfo.userphone,userpass:this.userInfo.userpass}})
+                    data:{userName:this.userInfo.username,userPhone:this.userInfo.userphone,userPass:this.userInfo.userpass}})
           .then(res=>{
-          console.log(res)
-          let type = res.data.code === '200' ? 'success' : 'error'
-          this.$message({
-              message: res.data.message,
+          let type = res.data.success ? 'success' : 'error'
+          let message = res.data.success ? '注册成功' : '注册失败，已存在该用户'
+            this.$message({
+              message,
               type
-          })
+            })
           this.codeText = this.randomCode("canvas1", 4)
           this.userphone = ''
           this.userpass = ''
