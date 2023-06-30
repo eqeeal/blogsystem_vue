@@ -62,7 +62,7 @@ export default {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
           if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-            this.$http.get('/api/login/?userphone='+ this.userInfo.userphone + '&userpass=' + this.userInfo.userpass).then(res=>{
+            this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
               this.$message({
                   message: '登录成功',
                   type: 'success'

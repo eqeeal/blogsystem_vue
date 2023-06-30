@@ -18,7 +18,9 @@
       <div class="menu-title" v-show="!iSCollapse">Dashborder</div>
       <el-menu-item class="item" index="1-1">
         <i class="el-icon-s-platform" ></i>
-        <span slot="title">Dashbord</span>
+        <span slot="title">
+          <router-link to="/dashbord">Dashbord</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="1-2"> 
         <i class="el-icon-edit-outline"></i>
@@ -27,28 +29,40 @@
       <div class="menu-title" v-show="!iSCollapse">管理模块</div>
       <el-menu-item class="item" index="2-1">
         <i class="el-icon-s-order" ></i>  
-        <span slot="title">博客管理</span>
+        <span slot="title">
+          <router-link to="/blog">博客管理</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="2-2"> 
         <i class="el-icon-chat-dot-square"></i>
-        <span slot="title">评论管理</span>
+        <span slot="title">
+          <router-link to="/comment">评论管理</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="2-3"> 
         <i class="el-icon-s-management"></i>
-        <span slot="title">分类管理</span>
+        <span slot="title" route>
+          <router-link to="/category">分类管理</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="2-4"> 
         <i class="el-icon-discount"></i>
-        <span slot="title">标签管理</span>
+        <span slot="title">
+          <router-link to="/tag">标签管理</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="2-5"> 
         <i class="el-icon-s-promotion"></i>
-        <span slot="title">友情链接</span>
+        <span slot="title">
+          <router-link to="/link">友情链接</router-link>
+        </span>
       </el-menu-item>
       <div class="menu-title" v-show="!iSCollapse">系统管理</div>
       <el-menu-item class="item" index="3-1">
         <i class="el-icon-s-tools" ></i>
-        <span slot="title">系统配置</span>
+        <span slot="title">
+          <router-link to="/system">系统配置</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="3-2"> 
         <i class="el-icon-key"></i>
@@ -94,6 +108,15 @@ export default {
 </script>
 
 <style scoped>
+/* 取消router-link的默认样式 */
+.router-link-active {
+  text-decoration: none;
+  color: white;
+}
+a {
+  text-decoration: none;
+  color: #c3c8d1;
+}
 .avatar {
   width: 50px;
   height: 50px;
