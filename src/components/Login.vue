@@ -49,7 +49,7 @@ export default {
     // 用户登录函数
     login(){
       if(this.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-        this.$http.get('/api/login/?userphone='+ this.userInfo.userphone + '&userpass=' + this.userInfo.userpass).then(res=>{
+        this.$http.get('/api/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
           console.log(res)
           this.$message({
               message: '登录成功',
