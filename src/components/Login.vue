@@ -67,24 +67,17 @@ export default {
             this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
               // console.log(res)
               if(!res.data.success){
-                this.$message({
-                  message: '用户名或密码错误，请重新登录',
-                  type: 'error'
-                })
+                this.$message.error('用户名或密码错误，请重新登录')
               }else{
-                this.$message({
-                  message: '登录成功',
-                  type: 'success'
-                })
+                this.$message.success('登录成功')
+                //保存登录用户手机号
+                localStorage.setItem("LoginUser",this.userInfo.userphone)
                 //登录成功，页面跳转到首页
                 this.$router.push('/dashbord')
               }
             })
           } else {
-            this.$message({
-                  message: '验证码错误',
-                  type: 'error'
-              })
+            this.$message.error('验证码错误')
             this.codeText = this.randomCode("canvas1", 4)
             this.userInfo.inputcode = ''
           }
@@ -102,20 +95,15 @@ export default {
           .then(res=>{
           let type = res.data.success ? 'success' : 'error'
           let message = res.data.success ? '注册成功' : '注册失败，已存在该用户'
-            this.$message({
-              message,
-              type
-            })
+          this.$message({message,type})
+          //注册成功，重置表单状态
           this.codeText = this.randomCode("canvas1", 4)
           this.userphone = ''
           this.userpass = ''
           this.userInfo.inputcode = ''
         })
       } else {
-        this.$message({
-              message: '验证码错误',
-              type: 'error'
-          })
+        this.$message.error('验证码错误')
       }
     },
     randomCode(canvasId, letterLength) {

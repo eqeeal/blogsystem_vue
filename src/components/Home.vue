@@ -66,7 +66,9 @@
       </el-menu-item>
       <el-menu-item class="item" index="3-2"> 
         <i class="el-icon-key"></i>
-        <span slot="title">修改密码</span>
+        <span slot="title">
+          <router-link to="/updatePwd">修改密码</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="3-3"> 
         <i class="el-icon-right"></i>
