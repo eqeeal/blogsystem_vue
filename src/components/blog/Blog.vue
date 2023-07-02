@@ -3,7 +3,7 @@
     <span style="font-size: 20px">博客管理</span>
     <hr />
     <div class="blog-main">
-      <el-button type="success">新增</el-button>
+      <el-button type="success" @click="page()">新增</el-button>
       <el-button type="primary">修改</el-button>
       <el-button type="danger">删除</el-button>
       <el-input
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+
 export default {
   data() {
     return {
@@ -85,72 +86,6 @@ export default {
         currentPage: 1,
       },
     };
-  },
-  created() {},
-  methods: {
-    createPage() {
-      this.$api.user
-        .page(this.pageInfo.pageSize, this.pageInfo.currentPage)
-        .then((res) => {
-          this.tableData = res.data.data.records || [];
-          this.pageInfo.total = res.data.data.total;
-        });
-    },
-    pageSizeChange(newSize) {
-      this.pageInfo.pageSize = newSize;
-      this.pageInfo.currentPage = 1;
-      this.$api.user
-        .page(newSize, this.pageInfo.currentPage, this.search)
-        .then((res) => {
-          this.tableData = res.data.data.records || [];
-          this.pageInfo.total = res.data.data.total;
-        });
-    },
-    pageCurrentChange(newPage) {
-      this.$api.user
-        .page(this.pageInfo.pageSize, newPage, this.search)
-        .then((res) => {
-          this.tableData = res.data.data.records || [];
-          this.pageInfo.total = res.data.data.total;
-        });
-    },
-    searchList() {
-      if (this.time != null) {
-        this.search.beginTime = this.time[0];
-        this.search.endTime = this.time[1];
-      }
-      this.$api.user.page(5, 1, this.search).then((res) => {
-        this.tableData = res.data.data.records || [];
-        this.pageInfo.total = res.data.data.total;
-        this.pageInfo.currentPage = 1;
-        this.pageInfo.pageSize = 5;
-      });
-    },
-    reset() {
-      this.search = {};
-      this.search.status = "3";
-    },
-    changeStatus(status, userId) {
-      const arr = this.$refs.multipleTable.selection;
-      let arr2 = [];
-      if (userId != null) {
-        arr2.push(userId);
-      } else {
-        arr2 = arr.map((a) => a.userId);
-      }
-      if (arr2.length == 0) {
-        this.$message("请选择数据");
-        return;
-      }
-      this.$api.user.changeStatus(status, arr2).then((res) => {
-        if (res.data.success === false) {
-          this.$message.error(res.data.errorMsg);
-          return;
-        }
-        this.pageCurrentChange(this.pageInfo.currentPage);
-        this.$message.success("操作成功!");
-      });
-    },
   },
 };
 </script>
