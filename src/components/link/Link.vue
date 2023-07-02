@@ -1,15 +1,15 @@
 <template>
-  <div id="app">
-    <router-view></router-view>
+  <div>
+    友情链接
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
+
 }
 </script>
 
 <style>
+
 </style>
