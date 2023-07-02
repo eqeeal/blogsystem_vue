@@ -59,29 +59,30 @@ export default {
   methods: {
     // 用户登录函数
     login(){
+      // 表单验证
       this.$refs['ruleForm'].validate((valid) => {
+        //验证码判断是否正确
         if (valid) {
           if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
             this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
-
-              this.$message({
-                  message: '登录成功',
-                  type: 'success'
-              })
-              localStorage.setItem("userId",res.data.data)
-              //登录成功，页面跳转到首页
-              this.$router.push('/home')
+              // console.log(res)
+              if(!res.data.success){
+                this.$message.error('用户名或密码错误，请重新登录')
+              }else{
+                this.$message.success('登录成功')
+                //保存登录用户手机号
+                localStorage.setItem("LoginUser",this.userInfo.userphone)
+                //登录成功，页面跳转到首页
+                this.$router.push('/dashbord')
+              }
             })
           } else {
-            this.$message({
-                  message: '验证码错误',
-                  type: 'error'
-              })
+            this.$message.error('验证码错误')
             this.codeText = this.randomCode("canvas1", 4)
             this.userInfo.inputcode = ''
           }
         } else {
-          return false;
+          return false
         }
       })
 
@@ -90,24 +91,19 @@ export default {
     regist() {
       if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
         this.$http({method:'post',url:'/api/user/add',
-                    data:{userPhone:this.userInfo.userphone,userPass:this.userInfo.userpass}})
+                    data:{userName:this.userInfo.username,userPhone:this.userInfo.userphone,userPass:this.userInfo.userpass}})
           .then(res=>{
-          console.log(res)
-          let type = res.data.code === '200' ? 'success' : 'error'
-          this.$message({
-              message: res.data.message,
-              type
-          })
+          let type = res.data.success ? 'success' : 'error'
+          let message = res.data.success ? '注册成功' : '注册失败，已存在该用户'
+          this.$message({message,type})
+          //注册成功，重置表单状态
           this.codeText = this.randomCode("canvas1", 4)
           this.userphone = ''
           this.userpass = ''
           this.userInfo.inputcode = ''
         })
       } else {
-        this.$message({
-              message: '验证码错误',
-              type: 'error'
-          })
+        this.$message.error('验证码错误')
       }
     },
     randomCode(canvasId, letterLength) {

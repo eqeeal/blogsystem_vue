@@ -10,9 +10,10 @@ import Dashbord from '../components/dashbord/Dashbord.vue'
 import Link from '../components/link/Link.vue'
 import System from '../components/system/System.vue'
 import Tag from '../components/tag/Tag.vue'
+import UpdatePwd from '../components/system/UpdatePwd.vue'
 
 Vue.use(VueRouter)
-export default new VueRouter({
+const router = new VueRouter({
     routes: [
         { path: '/', redirect: '/login' },
         { path: '/login', component: Login },
@@ -25,8 +26,28 @@ export default new VueRouter({
                 { path: '/dashbord', component: Dashbord },
                 { path: '/link', component: Link },
                 { path: '/system', component: System },
-                { path: '/tag', component: Tag }
+                { path: '/tag', component: Tag },
+                { path: '/updatePwd', component: UpdatePwd }
             ]
         },
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    if (to.path.includes("/home")) {
+        let loginuser = localStorage.getItem("LoginUser")
+        if (loginuser) {
+            //有，则正常跳转
+            next()//放行
+        } else {
+            //没有，则重定向到登录页面
+            alert('请先登录！')
+            next("/login")
+        }
+    } else {
+        //去的不是home，直接放行
+        next()//用于放行表示正常跳转
+    }
+})
+
+export default router
