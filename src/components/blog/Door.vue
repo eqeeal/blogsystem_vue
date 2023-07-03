@@ -38,6 +38,15 @@ export default {
     Side,
     Main
   },
+  data(){
+    return{
+
+    }
+  },
+  created(){
+  },
+  methods:{
+  }
 };
 </script>
 

@@ -56,7 +56,7 @@ ul {
 .link {
   position: absolute;
   right: 30px;
-    cursor: pointer;
+  cursor: pointer;
 }
 .desc{
  text-align: center;

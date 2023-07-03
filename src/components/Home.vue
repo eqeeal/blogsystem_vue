@@ -24,7 +24,9 @@
       </el-menu-item>
       <el-menu-item class="item" index="1-2"> 
         <i class="el-icon-edit-outline"></i>
-        <span slot="title">发布博客</span>
+        <span slot="title">
+          <router-link to="/addBlog">发布博客</router-link>
+        </span>
       </el-menu-item>
       <div class="menu-title" v-show="!iSCollapse">管理模块</div>
       <el-menu-item class="item" index="2-1">
@@ -66,7 +68,9 @@
       </el-menu-item>
       <el-menu-item class="item" index="3-2"> 
         <i class="el-icon-key"></i>
-        <span slot="title">修改密码</span>
+        <span slot="title">
+          <router-link to="/updatePwd">修改密码</router-link>
+        </span>
       </el-menu-item>
       <el-menu-item class="item" index="3-3"> 
         <i class="el-icon-right"></i>

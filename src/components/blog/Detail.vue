@@ -1,84 +1,123 @@
 <template>
-    <div class="contain">
-       <div class="blog-body">
-         <div class="baseInfo">
-            <div class="author">我是十三</div>
-            <div class="count">
-                <span><i class="el-icon-date"></i>2023-10-11</span>/
-                <span><i class="el-icon-chat-dot-round"></i>10086条评论</span>/
-                <span><i class="el-icon-view"></i>1001011浏览</span>
-            </div>
-            <hr>
+  <div class="contain">
+    <div class="blog-body">
+      <div class="baseInfo">
+        <div class="author">{{author}}</div>
+        <div class="count">
+          <span><i class="el-icon-date"></i>{{blog.createTime}}</span>/
+          <span><i class="el-icon-chat-dot-round"></i>10086条评论</span>/
+          <span><i class="el-icon-view"></i>{{blog.view}}浏览</span>
         </div>
-        <div class="content">
-            内容
+        <div class="word">
+            <span class="word1">世界上有一个大帅比啊</span>
+            <span class="word2">现在这个人就在看这句话</span>
         </div>
-        <div class="commont">
-
-        </div>
-       </div>
+        <hr />
+      </div>
+      <div v-html="blog.path" class="content"></div>
+      <div class="commont"></div>
     </div>
+  </div>
 </template>
 
 <script>
+import $api from '@/api'
+
 export default {
-    data(){
-        return{
-            data:"",
-        }
+  data() {
+    return {
+      blog: "",
+      author:"author",
+    };
+  },
+  created() {
+    this.blogDetail();
+  },
+  methods: {
+    blogDetail() {
+      let id = this.$route.query.id
+     $api.blog.getById(id).then(res =>{
+        this.blog = res.data.data
+     })
+     $api.blog.getAuthor(id).then(res => {
+        this.author = res.data.data
+     })
     },
-    methods:{
-       
-    }
-}
+  },
+};
 </script>
 
 <style scoped>
-*{
-    margin: 0;
-    padding: 0;
+* {
+  margin: 0;
+  padding: 0;
 }
-.contain{
-    background-image:  url(@/assets/imgs/read.jpg);
-    height: 100vh;
-    border: 0px solid;
+.contain {
+  background-image: url(@/assets/imgs/read.jpg);
+  border: 0px solid;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.blog-body{
-    background-color: white;
-    height: 100vh;
-    width: 96vw;
-    margin: auto;
+.blog-body {
+  background-color: white;
+  height: 90%;
+  width: 96%;
+  padding: 3%;
+  margin-bottom: 200px;
+  margin-top: 100px;
+  margin-left: 10%;
+  margin-right: 10%;
 }
-.baseInfo{
-    height: 20vh;
-    margin: auto;
-    padding: 20px;
+.baseInfo {
+  height: 20vh;
+  margin: auto;
+  padding: 20px;
 }
-.author{
-    font-size: 40px;
-    font-weight: 200;
+.author {
+  font-size: 40px;
+  font-weight: 200;
 }
-.content{
-    padding: 20px;
+.content {
+  padding: 20px;
 }
-.count{
-    margin-top: 2vh;
+.count {
+  margin-top: 2vh;
 }
-span{
-    margin-left: 10px;
-    margin-right: 3px;
+span {
+  margin-left: 10px;
+  margin-right: 3px;
 }
-hr{
-    margin-top: 5vh;
-    border-top: 2px;
+hr {
+  margin-top: 2vh;
+  border-top: 2px;
+}
+.word1,.word2{
+    width:100px;
+    border-radius: 15px;
+    padding-left: 8px;
+    padding-right: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: aliceblue;
+    font-size: 12px;
+}
+.word1{
+    background-color: rgb(111,163,239);
+}
+.word2{
+    background-color: rgb(255,152,0);
+}
+.word{
+    margin-top: 30px;
 }
 /deep/ .el-icon-view:before {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 /deep/ .el-icon-date:before {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 /deep/ .el-icon-chat-dot-round:before {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 </style>

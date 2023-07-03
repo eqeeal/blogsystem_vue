@@ -5,9 +5,10 @@
         <span>搜索文章</span>
         <hr />
         <el-input
+          @change="search()"
           placeholder="请输入关键字搜索"
           prefix-icon="el-icon-search"
-          v-model="input2"
+          v-model="keyWords"
         >
         </el-input>
       </el-col>
@@ -72,6 +73,9 @@
 </template>
 
 <script>
+
+import Bus from "@/api/Bus";
+
 export default {
   data() {
     return {
@@ -121,9 +125,15 @@ export default {
           updateTime: "updateTime",
           category: "category",
         },
-      ]
+      ],
+      keyWords:'',
     };
   },
+  methods:{
+    search(){
+      Bus.$emit("keyWords",this.keyWords,"向main传递搜索条件")
+    }
+  }
 };
 </script>
 

@@ -1,32 +1,69 @@
 <template>
   <div>
-    <div class="contain" v-for="(item, index) in tableData" :key="index">
-      <div v-if="index % 2 == 0">
-          <img class="half-left half-pickture"  :src="$host + '/common/download?name='+item.pickture " alt="">
-        <div class="half-right half-blog">{{ index }}ssss</div>
+    <div class="contain" v-for="(item, index) in blogTable" :key="index">
+      <div v-if="index % 2 == 0" @click="blogDetail(item.id)">
+        <img
+          class="half-left half-pickture"
+          :src="$host + '/common/download?name=' + 'read.jpg'"
+          alt=""
+        />
+        <div class="half-right half-blog">
+          <div class="blog-view1">
+            <div class="blog-title">{{ item.title }}</div>
+            <div class="blog-createTime">
+              <i class="el-icon-date"></i>发表于{{ item.createTime
+              }}<span>&nbsp&nbsp|&nbsp<i class="el-icon-receiving"></i>{{ item.categoryName }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div v-else>
-        <div class="half-left half-blog">{{ index }}asssss</div>
-        <img class="half-right half-pickture" :src="$host + '/common/download?name='+item.pickture " alt="">
+      <div v-else @click="blogDetail(item.id)">
+        <div class="half-left half-blog">
+          <div class="blog-view">
+            <div class="blog-title">{{ item.title }}</div>
+            <div class="blog-createTime">
+              <i class="el-icon-date"></i>发表于{{ item.createTime
+              }}<span>&nbsp&nbsp|&nbsp<i class="el-icon-receiving"></i>{{ item.categoryName }}</span>
+            </div>
+          </div>
+        </div>
+        <img
+          class="half-right half-pickture"
+          :src="$host + '/common/download?name=' + 'read.jpg'"
+          alt=""
+        />
       </div>
     </div>
     <div class="page">
-       <el-pagination background 
-        layout="prev, pager, next" 
-        :total=pageData.total
-        :page-size=pageData.pageSize
-        :current-page=currentPage
+      <el-pagination
+        background
+        @current-change="pageCurrentChange"
+        @prev-click="pageCurrentChange"
+        @next-click="pageCurrentChange"
+        :total="pageInfo.total"
+        :page-size="pageInfo.pageSize"
+        :current-page="pageInfo.currentPage"
         hide-on-single-page
-       >
-    </el-pagination>
+        layout="prev, pager, next"
+      >
+      </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
+import Bus from "@/api/Bus";
+import $api from "@/api";
+import router from '@/router';
 export default {
   data() {
     return {
+      pageInfo: {
+        pageSizes: [5, 10, 20, 50, 100],
+        pageSize: 5,
+        total: 15,
+        currentPage: 1,
+      },
       tableData: [
         {
           pickture: "read.jpg",
@@ -65,12 +102,52 @@ export default {
           category: "category",
         },
       ],
-      pageData:{
-        total:13,
-        currentPage:'',
-        pageSize:10
-      }
+      blogTable: {},
+      keyWords: "",
     };
+  },
+  mounted() {
+    Bus.$on("keyWords", (val) => {
+      this.keyWords = val;
+      this.createPage();
+    });
+  },
+  created() {
+    this.createPage();
+  },
+  methods: {
+    getData() {
+      var data = {
+        pageSize: this.pageInfo.pageSize,
+        pageNum: this.pageInfo.currentPage,
+        title: this.keyWords,
+      };
+      return data;
+    },
+    createPage() {
+      var data = this.getData();
+      $api.blog.page(data).then((res) => {
+        this.blogTable = res.data.data.records;
+        // console.log(res.data.data)
+        this.pageInfo.total = res.data.data.total;
+        // console.log(this.blogTable)
+      });
+    },
+    pageSizeChange(newSize) {
+      this.pageInfo.pageSize = newSize;
+      this.pageInfo.currentPage = 1;
+      this.createPage();
+    },
+    pageCurrentChange(newPage) {
+      this.pageInfo.currentPage = newPage;
+      this.createPage();
+    },
+    searchList() {
+      this.createPage();
+    },
+    blogDetail(id){
+      this.$router.push({name:"Detail",query:{id:id}})
+    }
   },
 };
 </script>
@@ -85,25 +162,48 @@ export default {
   border-radius: 15px;
   overflow: hidden;
 }
-.page{
-  text-align:center;
-  margin-top: 10vh;
-  margin-bottom: 10vh;
+.page {
+  text-align: center;
+  margin-top: 15vh;
+  margin-bottom: 20vh;
 }
-.half-left,.half-right{
+.half-left,
+.half-right {
   height: 300px;
   display: inline-block;
   /* background-color: pink; */
 }
-.half-right{
+.half-right {
   float: right;
 }
-.half-pickture{
+.half-pickture {
   width: 45%;
   border-radius: 15px;
 }
-.half-blog{
+.blog-view{
+  margin-top: 80px;
+  margin-left: 30px;
+}
+.blog-view1{
+  margin-top: 80px;
+}
+.half-blog {
   width: 50%;
+}
+.blog-title{
+  font-size: 30px;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.blog-title:hover{
+  color: rgb(73,177,245);
+}
+.blog-createTime{
+  font-size: 17px;
+  color: rgb(133,133,133);
+}
+i{
+  margin-right: 5px;
 }
 img {
   transition: transform 0.5s;
@@ -111,19 +211,19 @@ img {
 img:hover {
   transform: scale(1.1);
 }
->>> button.btn-prev{
-  height: 40px;
-  width: 40px;
-    background-color: #f6f8fa;
-  box-shadow: 0 3px 8px 6px rgba(7,17,27,0.05);
-}
-/deep/ button.btn-next{
+>>> button.btn-prev {
   height: 40px;
   width: 40px;
   background-color: #f6f8fa;
-  box-shadow: 0 3px 8px 6px rgba(7,17,27,0.05);
+  box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
 }
->>> .el-pagination.is-background .el-pager li{
+/deep/ button.btn-next {
+  height: 40px;
+  width: 40px;
+  background-color: #f6f8fa;
+  box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
+}
+>>> .el-pagination.is-background .el-pager li {
   height: 40px;
   width: 40px;
   font-size: 15px;
@@ -132,6 +232,6 @@ img:hover {
   margin-right: 15px;
   border-radius: 10px;
   background-color: #f6f8fa;
-  box-shadow: 0 3px 8px 6px rgba(7,17,27,0.05);
+  box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.05);
 }
 </style>
