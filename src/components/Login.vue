@@ -72,6 +72,7 @@ export default {
                 this.$message.success('登录成功')
                 //保存登录用户手机号
                 localStorage.setItem("LoginUser",this.userInfo.userphone)
+                localStorage.setItem("LoginUserId",res.data.data)
                 //登录成功，页面跳转到首页
                 this.$router.push('/dashbord')
               }

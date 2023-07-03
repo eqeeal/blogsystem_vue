@@ -44,6 +44,7 @@
               <el-button  @click="toggleSelection()">取消选择</el-button>
               <el-button type="primary" plain @click="bannedBetch(1)">批量解禁</el-button>
               <el-button type="danger" plain @click="bannedBetch(0)">批量封禁</el-button>
+              <el-button type="primary" @click="centerDialogVisible = true">发送评论</el-button>
             </el-form-item>
           </el-row>
         </el-form>
@@ -129,35 +130,102 @@
           <div>
             <el-button
                 size="mini"
-                @click="handlePostRecomment(scope.$index, scope.row)">回复</el-button>
+                @click="commentId=scope.row.id;centerDialogVisible1=true;index=scope.$index">回复</el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
-
     </el-card>
+    <el-dialog
+        title="发送评论"
+        :visible.sync="centerDialogVisible"
+        width="30%"
+        center>
+      <el-row>
+        <el-col :span="20">
+          <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>
+        </el-col>
+        <el-col :span="4">
+          <div style="margin: 0 auto;width: 100%">
+            <el-upload
+                class="avatar-uploader"
+                action="http://localhost:8081/common/upload"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">
+
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+        </el-col>
+        <img v-if="imageUrl" :src="imageUrl" style="width: 240px;height: 240px">
+      </el-row>
+
+
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="cleanOpst">取 消</el-button>
+    <el-button type="primary" @click="postMainComment">确 定</el-button>
+  </span>
+    </el-dialog>
+
+    <el-dialog
+        title="发送评论"
+        :visible.sync="centerDialogVisible1"
+        width="30%"
+        center>
+      <el-row>
+        <el-col :span="20">
+          <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>
+        </el-col>
+        <el-col :span="4">
+          <div style="margin: 0 auto;width: 100%">
+            <el-upload
+                class="avatar-uploader"
+                action="http://localhost:8081/common/upload"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">
+
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </div>
+        </el-col>
+        <img v-if="imageUrl" :src="imageUrl" style="width: 240px;height: 240px">
+      </el-row>
+
+
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="cleanOpst">取 消</el-button>
+    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>
+  </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import {updateComment} from "@/components/comment/api/comment";
 import CommentItem from "@/components/comment/commentVue/commentItem.vue";
-import {cleanPageData, setPageData} from "@/components/comment/js/commentJs";
 
 
 export default {
   name:"CommentWorkShell",
   // eslint-disable-next-line vue/no-unused-components
   components: {CommentItem},
-  props:["blogId","blogList"],
+  props:["blogId","blogList","blogUserId"],
   data(){
     return{
+      imageUrl: '',
+      centerDialogVisible: false,
+      centerDialogVisible1: false,
       showBeBanned:false,
       pageQuary:{},
       recommentList:[],
       multipleSelection: [],
       activeName:"1",
-      total:0
+      total:0,
+      index:null,
+      input:'',
+      photo:'',
+      commentId:null
     }
   },
   watch:{
@@ -178,6 +246,51 @@ export default {
     this.init();
   },
   methods:{
+    handleAvatarSuccess(res, file) {
+      this.photo=res.data
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    postMainComment(){
+      let userId=localStorage.getItem("LoginUserId");
+      let s=2;
+      if(Number(userId)===this.blogUserId){
+        s=1;
+      }
+      let data={blogId:this.blogId,status:s,content:this.input,userId:userId,photo:this.photo};
+      this.$requst.commentHttp.handlePostComment(data);
+      this.cleanOpst();
+    },
+    handlePostRecomment(){
+      let userId=localStorage.getItem("LoginUserId");
+      let s=2;
+      if(Number(userId)===this.blogUserId){
+        s=1;
+      }
+      let data={commentId:this.commentId,status:s,content:this.input,userId:userId,photo:this.photo};
+      this.$requst.commentHttp.handlePostRecomment(data);
+      this.recommentList.at(this.index).recommentCount+=1;
+      this.cleanOpst();
+    },
+    cleanOpst(){
+      this.centerDialogVisible1=false;
+      this.centerDialogVisible=false;
+      this.photo='';
+      this.imageUrl='';
+      this.input=null;
+      this.commentId=null;
+    },
     clickMultiSelect(){
       this.multipleSelection=this.$refs.commentTab.selection;
     },
@@ -186,19 +299,19 @@ export default {
         this.multipleSelection.forEach(row=> {
           if (row.status === 2) {
             row.status = 1
-            updateComment(row.id, 1);
+            this.$requst.commentHttp.updateComment(row.id, 1);
           }
         });
         setTimeout(()=>{
           this.pageQuary.page=1
-          setPageData(this)
+          this.$requst.commentHttp.setPageData(this)
         },300)
 
       }
       else {
         this.multipleSelection.forEach(row=>{
             row.status=i;
-            updateComment(row.id,i);
+          this.$requst.commentHttp.updateComment(row.id,i);
         })
       }
 
@@ -217,30 +330,30 @@ export default {
     },
     handleBanned(index, row) {
       row.status=0;
-      updateComment(row.id,0);
+      this.$requst.commentHttp.updateComment(row.id,0);
     },
     handleReleaseBanned(index, row) {
       row.status=1;
-      updateComment(row.id,1);
+      this.$requst.commentHttp.updateComment(row.id,1);
     },
     query(){
-      setPageData(this);
+      this.$requst.commentHttp.setPageData(this);
     },
     cleanQuery(){
-      cleanPageData(this);
+      this.$requst.commentHttp.cleanPageData(this);
     },
     handleSizeChange(val) {
       this.pageQuary.pageSize=val;
-      setPageData(this);
+      this.$requst.commentHttp.setPageData(this);
       //console.log(`每页 ${val} 条`);
     },
     handleCurrentChange(val) {
       this.pageQuary.page=val
-      setPageData(this)
+      this.$requst.commentHttp.setPageData(this)
       //console.log(`当前页: ${val}`);
     },
     init(){
-      cleanPageData(this);
+      this.$requst.commentHttp.cleanPageData(this);
     }
   }
 }

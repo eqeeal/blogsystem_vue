@@ -65,7 +65,7 @@ export default {
       //console.log(`当前页: ${val}`);
     },
     goToCom(row, column, event){
-      this.$emit("cli",row.id);
+      this.$emit("cli",row);
     }
   }
 }

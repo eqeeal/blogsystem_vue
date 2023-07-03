@@ -6,8 +6,6 @@
 
 <script>
 
-import {getImage} from "@/components/comment/js/commentJs";
-
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "getavatarbyname",
@@ -16,11 +14,9 @@ export default {
 
   },
   methods:{
-    getImage,
-    func(){
-      console.log("ok");
-    },
-
+    getImage(name){
+      return this.$requst.commentHttp.getImage(name)
+    }
   }
 
 }
