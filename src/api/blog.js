@@ -49,4 +49,41 @@ export default {
             params:{"tagList":tagList}
         })
     },
+    getUserInfo(){
+        var phone = localStorage.getItem("LoginUser")
+        return request({
+            method:'get',
+            url:`/user/getNowUserInfo`,
+            params:{"phone":phone}
+        })
+    },
+    getUserId(){
+        var phone = localStorage.getItem("LoginUser")
+        return request({
+            method:'get',
+            url:`/user/getNowUserId`,
+            params:{"phone":phone}
+        })
+    },
+    getCategoryOptions(){
+        return request({
+            method:'get',
+            url:`/category/getCategory`,
+        })
+    },
+    getTagOptions(){
+        return request({
+            method:'get',
+            url:`/tag/getTagOptions`,
+        })
+    },
+    getBlogInfo(){
+        var id = localStorage.getItem("userId")
+        return request({
+            method:'get',
+            url:`${name}/getCountInfo/${id}`,
+            // method:'get',
+            // url:`/tag/getTagOptions/${id}`,
+        })
+    }
 }

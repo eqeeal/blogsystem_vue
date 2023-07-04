@@ -64,7 +64,7 @@ export default {
         //验证码判断是否正确
         if (valid) {
           if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-            this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
+            this.$http.get('/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
               // console.log(res)
               if(!res.data.success){
                 this.$message({
@@ -72,10 +72,10 @@ export default {
                   type: 'error'
                 })
               }else{
-                this.$message({
-                  message: '登录成功',
-                  type: 'success'
-                })
+                this.$message.success('登录成功')
+                //保存登录用户手机号
+                localStorage.setItem("LoginUser",this.userInfo.userphone)
+                localStorage.setItem("LoginUserId",res.data.data)
                 //登录成功，页面跳转到首页
                 this.$router.push('/dashbord')
               }
@@ -92,7 +92,7 @@ export default {
           return false
         }
       })
-      
+
     },
     // 用户注册函数
     regist() {
@@ -166,7 +166,7 @@ export default {
       console.log("111")
       let timer = null
       return function(){
-        if(timer !== null){ 
+        if(timer !== null){
           clearTimeout(timer)
         }
         timer = setTimeout(() => {

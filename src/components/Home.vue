@@ -88,7 +88,7 @@
         </div>
         <span class="dashbord">Dashboard</span>
         <div class="head-right">
-          <i class="el-icon-s-promotion dashbord" style="font-size:25px"></i>博客首页
+          <i class="el-icon-s-promotion dashbord" style="font-size:25px"></i><div @click="goToDoor()">博客首页</div>
           <i class="el-icon-user-solid dashbord" style="font-size:25px"></i>作者
         </div>
       </el-header>
@@ -101,6 +101,7 @@
 </template>
 
 <script>
+import $api from '@/api'
 export default {
     data(){
         return {
@@ -108,6 +109,14 @@ export default {
           iSCollapse: false,
         }
     },
+    methods:{
+      goToDoor(){
+         $api.blog.getUserId().then(res=>{
+         localStorage.setItem("userId",res.data.data)
+         this.$router.push("Door");
+      })
+      }
+    }
 }
 </script>
 

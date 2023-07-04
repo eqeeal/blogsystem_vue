@@ -28,8 +28,13 @@
         <el-table-column label="标题">
           <template slot-scope="scope">{{ scope.row.title }}</template>
         </el-table-column>
-        <el-table-column prop="prePickture" label="预览图">
-          <img :src="$host + '/common/download?name=read.jpg'" alt="预览图" />
+        <el-table-column prop="imgUrl" label="预览图">
+          <!-- <img :src="$host + '/common/download?name=read.jpg'" alt="预览图" /> -->
+          <template slot-scope="scope">
+            <img v-if="scope.row.imgUrl" :src="scope.row.imgUrl"/>
+            <img v-else :src="$host + '/common/download?name=read.jpg'" alt="预览图" />
+          </template>
+          
         </el-table-column>
         <el-table-column prop="view" label="浏览量"> </el-table-column>
         <el-table-column label="状态">
@@ -64,7 +69,7 @@
       :before-close="handleClose"
     >
       <div class="add-body">
-        <div class="select">
+        <!-- <div class="select">
           <el-input
             class="dia-input"
             v-model="selectContain.title"
@@ -98,8 +103,59 @@
             >
             </el-option>
           </el-select>
+        </div> -->
+        <div class="select">
+          <el-row :gutter="10">
+            <el-col :span="12">
+              <el-input
+                class="dia-input"
+                v-model="selectContain.title"
+                maxlength="50"
+                minlength="1"
+                placeholder="请输入标题"
+              ></el-input
+            ></el-col>
+            <el-col :span="6">
+              <el-select v-model="tagIds" multiple placeholder="请选择标签">
+                <el-option
+                  v-for="item in tagOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option> </el-select
+            ></el-col>
+            <el-col :span="6">
+              <el-select v-model="selectContain.categoryId" placeholder="请选择分类">
+                <el-option
+                  v-for="item in categoryOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-row>
+          <el-row :gutter="10">
+            <el-col :span="6">
+              <span style="font-size: 18px; color: rgb(192, 201, 222)"
+                >选择预览图片</span
+              >
+              <el-upload
+                class="avatar-uploader"
+                name="file"
+                action="http://124.70.54.24:3001/upload"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload"
+              >
+                <img v-if="selectContain.imgUrl" :src=selectContain.imgUrl class="avatar" />
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+              </el-upload>
+            </el-col>
+          </el-row>
         </div>
-
         <quill-editor
           v-model="selectContain.path"
           ref="myQuillEditor"
@@ -111,7 +167,7 @@
         </quill-editor>
 
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button @click="cancle()">取 消</el-button>
           <el-button type="primary" @click="updataBlog()">确 定</el-button>
         </div>
       </div>
@@ -144,39 +200,31 @@ export default {
         total: "",
         currentPage: 1,
       },
-            tagOptions: [
-        {
-          value: "1",
-          label: "黄金糕",
-        },
-        {
-          value: "2",
-          label: "双皮奶",
-        },
-        {
-          value: "3",
-          label: "蚵仔煎",
-        },
-      ],
-      categoryOptions: [
-        {
-          value: "1",
-          label: "黄金糕",
-        },
-        {
-          value: "2",
-          label: "双皮奶",
-        },
-      ],
-      tagIds:[],
+      tagOptions: [],
+      categoryOptions: [],
+      tagIds: [],
       dialogVisible: false,
       selectContain: "",
+      imageUrl: "", //回显图片地址
     };
   },
   created() {
     this.createPage();
+    this.getTagOptions();
+    this.getCategoryOptions();
   },
   methods: {
+    getTagOptions(){
+      $api.blog.getTagOptions().then(res=>{
+        this.tagOptions = res.data.data;
+        console.log(res.data.data)
+      })
+    },
+    getCategoryOptions(){
+      $api.blog.getCategoryOptions().then(res=>{
+        this.categoryOptions = res.data.data;
+      })
+    },
     getData() {
       var data = {
         pageSize: this.pageInfo.pageSize,
@@ -207,7 +255,7 @@ export default {
       this.createPage();
     },
     addBlog() {
-      this.$router.push("AddBlog")
+      this.$router.push("AddBlog");
     },
     editBlog() {
       const arr = this.$refs.multipleTable.selection;
@@ -220,12 +268,13 @@ export default {
         return;
       }
       this.selectContain = arr[0];
-      $api.blog.getTagIds(this.selectContain.id).then(res=>{
+      // alert(JSON.stringify(this.selectContain.imgUrl))
+      $api.blog.getTagIds(this.selectContain.id).then((res) => {
         this.tagIds = res.data.data;
-      })
-      
+      });
+
       this.dialogVisible = !this.dialogVisible;
-      
+
       // console.log(this.selectContain);
     },
     deleteBlog() {
@@ -260,7 +309,6 @@ export default {
         });
     },
     updataBlog() {
-
       var blog = this.selectContain;
 
       if (blog.categoryId.length == 0) {
@@ -279,12 +327,43 @@ export default {
         this.$message.error("请选择标签");
         return;
       }
-      $api.blog.updateBlog(blog,this.tagIds).then(res=>{
-            this.dialogVisible=!this.dialogVisible
-            this.createPage()
-            this.$message.success(res.data.data)
-        })
+      $api.blog.updateBlog(blog, this.tagIds).then((res) => {
+        this.dialogVisible = !this.dialogVisible;
+        this.createPage();
+        this.$message.success(res.data.data);
+      });
       dialogVisible = false;
+    },
+    cancle() {
+      this.dialogVisible = !this.dialogVisible;
+      this.createPage();
+    },
+    handleAvatarSuccess(res) {
+      console.log("上传请求返回的数据", res);
+      if (res.code == 200) {
+        //成功
+        this.selectContain.imgUrl = res.data;
+      }
+    },
+    beforeAvatarUpload(file) {
+      console.log("上传之前", file);
+      //判断大小和类型是否符合条件,最多5m的大小限制，并且只能是png、jpg、jpeg、gif、webp等格式
+      //使用正则表达式来判断数据是否符合指定条件
+      if (!/(png|jpg|jpeg|gif|webp)$/.test(file.type)) {
+        this.$message({
+          message: "只能上传png、jpg、jpeg、gif、webp格式的图片",
+          type: "error",
+        });
+        return false;
+      }
+      if (file.size > 1024 * 1024 * 2) {
+        this.$message({
+          message: "只能上传大小小于2mb的图片",
+          type: "error",
+        });
+        return false;
+      }
+      return true; //允许上传
     },
   },
 };
@@ -292,7 +371,7 @@ export default {
 
 <style scoped>
 .blog-mange {
-  width: 95%;
+  width: 100%;
   background-color: white;
   text-align: left;
   padding: 20px;
@@ -300,31 +379,25 @@ export default {
 .blog-main {
   padding: 10px;
 }
-
+.el-input {
+  width: 200px;
+  margin-left: 30px;
+  margin-right: 5px;
+}
 hr {
   border-top: 2px;
 }
 button {
   margin-bottom: 2vh;
 }
-.el-input {
-  width: 250px;
-  margin-left: 2vw;
-  margin-right: 1vw;
-}
+
 .dia-input {
   width: 100%;
   margin-left: 0;
   margin-right: 1vw;
 }
-.el-select {
-  width: 40%;
-  margin-top: 10px;
-  margin-bottom: 20px;
-  margin-right: 10%;
-}
 .add-body {
-  padding: 20px;
+  padding: 2px;
 }
 .block {
   margin-top: 2%;
@@ -338,5 +411,30 @@ img {
 .dialog-footer {
   text-align: center;
   margin-top: 30px;
+}
+.avatar-uploader {
+  height: 180px;
+  width: 180px;
+  margin-top: 10px;
+  background-color: rgb(192, 201, 222, 0.3);
+  text-align: center;
+  line-height: 180px;
+}
+.avatar {
+  height: 180px;
+  width: 180px;
+}
+.el-upload {
+  height: 160px;
+}
+.select {
+  margin-bottom: 20px;
+}
+.el-select,
+.dia-input {
+  width: 90%;
+  height: 40px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 </style>

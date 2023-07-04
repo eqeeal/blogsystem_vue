@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <div ref="scrollRef">
     <div class="contain" v-for="(item, index) in blogTable" :key="index">
       <div v-if="index % 2 == 0" @click="blogDetail(item.id)">
-        <img
+        <img class="half-left half-pickture" v-if="item.imgUrl" :src="item.imgUrl"/>
+        <img class="half-left half-pickture" v-else :src="$host + '/common/download?name=read.jpg'" alt="预览图" />
+        <!-- <img
           class="half-left half-pickture"
           :src="$host + '/common/download?name=' + 'read.jpg'"
           alt=""
-        />
+        /> -->
         <div class="half-right half-blog">
           <div class="blog-view1">
             <div class="blog-title">{{ item.title }}</div>
@@ -60,7 +62,7 @@ export default {
     return {
       pageInfo: {
         pageSizes: [5, 10, 20, 50, 100],
-        pageSize: 5,
+        pageSize: 10,
         total: 15,
         currentPage: 1,
       },
@@ -104,6 +106,7 @@ export default {
       ],
       blogTable: {},
       keyWords: "",
+      userId:'',
     };
   },
   mounted() {
@@ -121,6 +124,7 @@ export default {
         pageSize: this.pageInfo.pageSize,
         pageNum: this.pageInfo.currentPage,
         title: this.keyWords,
+        userId: localStorage.getItem("userId"),
       };
       return data;
     },
@@ -131,6 +135,12 @@ export default {
         // console.log(res.data.data)
         this.pageInfo.total = res.data.data.total;
         // console.log(this.blogTable)
+        // this.$refs.scrollRef.scrollTo=0
+        window.scrollTo(0,0);
+        window.scrollTo({
+          top:0,
+          behavior:"smooth"
+        })
       });
     },
     pageSizeChange(newSize) {

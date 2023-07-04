@@ -2,12 +2,12 @@
   <div class="header">
     <div class="container">
       <div>
-        <div class="user">十三</div>
+        <div class="user">Hello</div>
         <div class="link">
-          <li index="/">主页</li>
-          <li index="/links">友链</li>
-          <li index="/about">关于</li>
-          <li index="/about">github</li>
+          <router-link class="li" to="/">主页</router-link>
+          <router-link class="li" to="/links">友链</router-link>
+          <router-link class="li" to="/about">关于</router-link>
+          <a href="https://github.com" target="_blank" class="li" to="/about">github</a>
         </div>
       </div>
     </div>
@@ -37,11 +37,11 @@ export default {
   font-size: 20px;
   /* display: inline-block; */
 }
-li {
+.li {
   display: inline-block;
   margin-left: 30px;
 }
-li:hover{
+.li:hover{
   color: pink;
 }
 ul {

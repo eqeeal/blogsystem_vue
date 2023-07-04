@@ -15,23 +15,20 @@
     </el-row>
     <el-row type="flex" class="head">
       <div style="width: 100%; text-align: center">
-        <img
-          class="avatar"
-          :src="$host + '/common/download?name=' + avatar"
-          alt=""
-        />
-        <p>name</p>
+        <img class="avatar" v-if="userAvatar" :src="userAvatar"/>
+        <img class="avatar" v-else :src="$host + '/common/download?name=read.jpg'" alt="头像" />
+        <p>{{userName}}</p>
         <el-col :span="8">
           文章
-          <p>12</p>
+          <p>{{count.blog}}</p>
         </el-col>
         <el-col :span="8">
           标签
-          <p>2</p>
+          <p>{{count.tag}}</p>
         </el-col>
         <el-col :span="8"
           >分类
-          <p>2</p>
+          <p>{{count.category}}</p>
         </el-col>
       </div>
       <div></div>
@@ -58,8 +55,10 @@
        <el-col >
          <span> 最新 </span>
          <hr />
-        <div v-for="(item,index) in blogData" :key="index">
-           <img class="blog-pickture"  :src="$host + '/common/download?name='+item.pickture " alt="">
+        <div v-for="(item,index) in blogData" :key="index" class="new-item" @click="blogDetail(item.id)">
+          <img class="blog-pickture" v-if="item.imgUrl" :src="item.imgUrl"/>
+        <img class="blog-pickture" v-else :src="$host + '/common/download?name=read.jpg'" alt="预览图" />
+           <!-- <img class="blog-pickture"  :src="$host + '/common/download?name='+item.pickture " alt=""> -->
               <div class="blog-title">
               {{item.title}}
               <div style="color:rgb(204,204,204)">
@@ -75,11 +74,18 @@
 <script>
 
 import Bus from "@/api/Bus";
+import $api from "@/api"
 
 export default {
   data() {
     return {
       avatar: "38.jpg",
+      userName:"userName",
+      count:{
+        blog:'',
+        tag:'',
+        category:''
+      },
       tags: [
         {
           name: "RESTful",
@@ -106,32 +112,65 @@ export default {
           count: 2,
         },
       ],
-      blogData:[
-         {
-          pickture: "read.jpg",
-          title: "title",
-          updateTime: "updateTime",
-          category: "category",
-        },
-        {
-          pickture: "read.jpg",
-          title: "title",
-          updateTime: "updateTime",
-          category: "category",
-        },
-        {
-          pickture: "read.jpg",
-          title: "title",
-          updateTime: "updateTime",
-          category: "category",
-        },
-      ],
+      tagOptions:[],
+      categoryOptions:[],
+      blogData:{},
       keyWords:'',
+      pageInfo: {
+        pageSize: 10,
+        currentPage: 1,
+      },
     };
+  },
+  created(){
+    this.getNew();
+    this.getUserInfo();
+    this.getBlogInfo();
+    // this.getHotTags();
+    // this.getCategory();
   },
   methods:{
     search(){
       Bus.$emit("keyWords",this.keyWords,"向main传递搜索条件")
+    },
+    getNew(){
+      var data = {
+        pageSize: this.pageInfo.pageSize,
+        pageNum: this.pageInfo.currentPage,
+        userId: localStorage.getItem("userId"),
+      };
+      $api.blog.page(data).then(res=>{
+        this.blogData = res.data.data.records;
+        // alert(JSON.stringify(this.blogData))
+      })
+    },
+    getBlogInfo(){
+      $api.blog.getBlogInfo().then(res=>{
+        this.count.blog = res.data.data.blogCount;
+        this.count.category = res.data.data.categoryCount;
+        this.count.tag = res.data.data.tagCount;
+      })
+    },
+    getUserInfo(){
+      $api.blog.getUserInfo().then(res=>{
+         this.avatar=res.data.data.userAvatar
+         this.userName=res.data.data.userName
+         localStorage.setItem("userId",res.data.data.userId)
+      })
+    },
+     getTagOptions(){
+      $api.blog.getTagOptions().then(res=>{
+        this.tagOptions = res.data.data;
+        console.log(res.data.data)
+      })
+    },
+    getCategoryOptions(){
+      $api.blog.getCategoryOptions().then(res=>{
+        this.categoryOptions = res.data.data;
+      })
+    },
+     blogDetail(id){
+      this.$router.push({name:"Detail",query:{id:id}})
     }
   }
 };
@@ -211,5 +250,9 @@ hr {
   display: inline-block;
   /* text-align: center; */
   float:right;
+}
+.new-item{
+  margin-bottom:10px;
+  cursor:pointer;
 }
 </style>
