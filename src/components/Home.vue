@@ -74,7 +74,7 @@
       </el-menu-item>
       <el-menu-item class="item" index="3-3"> 
         <i class="el-icon-right"></i>
-        <span slot="title">安全退出</span>
+        <span slot="title" @click="logOut()">安全退出</span>
       </el-menu-item>
     </el-menu>
     </el-aside>
@@ -114,8 +114,23 @@ export default {
          $api.blog.getUserId().then(res=>{
          localStorage.setItem("userId",res.data.data)
          this.$router.push("Door");
-      })
+      }),
+      //退出登录
+      logOut()
+      {
+        this.$confirm('此操作将删除本地登录用户信息, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            window.localStorage.removeItem('LoginUser')
+            this.$router.push('/login')
+            this.$message.success('退出登录成功！')
+          }).catch(()=>{
+            this.$message.info('已取消')
+          })
       }
+    }
     }
 }
 </script>
