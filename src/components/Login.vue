@@ -22,11 +22,13 @@
 </template>
 
 <script>
+import $UserHttp from "@/http/index"
 export default {
   name: 'login',
   data() {
     return {
       codeText: '',
+      list:[],
       userInfo:{
         username:'NewUser',
         userpass:'',
@@ -57,27 +59,35 @@ export default {
     }
   },
   methods: {
-    // 用户登录函数
+    //用户登录函数
     login(){
       // 表单验证
       this.$refs['ruleForm'].validate((valid) => {
         //验证码判断是否正确
         if (valid) {
           if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-            this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
-              // console.log(res)
-              if(!res.data.success){
+            this.$http.get('api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
+                console.log(res)
+              if(!res.data.data==="登陆成功"){
                 this.$message({
                   message: '用户名或密码错误，请重新登录',
                   type: 'error'
                 })
               }else{
+                localStorage.setItem("LoginUser",this.userInfo.userphone)
+                localStorage.setItem("LoginUserId",res.data.data)
                 this.$message({
                   message: '登录成功',
                   type: 'success'
                 })
                 //登录成功，页面跳转到首页
-                this.$router.push('/dashbord')
+                console.log(res.data.data[0].id)
+                this.$router.push({
+                  path:'/dashbord',
+                  // query:{
+                  //   id:res.data.data[0].id
+                  // }
+                })
               }
             })
           } else {
@@ -94,7 +104,16 @@ export default {
       })
       
     },
-    // 用户注册函数
+    // login(){
+    //   this.$http.userHttp.login(this.userInfo.userphone,this.userInfo.userpass).then(res=>{
+    //     if(res.data.success===true){
+    //       localStorage.setItem("loginUser",res.data.data);
+    //       this.$router.push("/comment");
+    //     }
+    //   })
+
+    // },
+   // 用户注册函数
     regist() {
       if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
         this.$http({method:'post',url:'/api/user/add',

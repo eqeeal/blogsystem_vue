@@ -10,8 +10,10 @@ Vue.use(ElementUI)
 // 引入axios
 import axios from 'axios'
 Vue.prototype.$http = axios
-
 Vue.config.productionTip = false
+// Vue.prototype.$requst=$http;
+
+
 
 new Vue({
   router,

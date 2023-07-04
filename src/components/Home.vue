@@ -102,6 +102,7 @@ export default {
         return {
           // 是否折叠菜单
           iSCollapse: false,
+          
         }
     },
 }
