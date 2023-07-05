@@ -46,6 +46,7 @@
         </div>
         </div>
       </div>
+
       <el-dialog title="添加新分类" :visible.async="addDialog" width="30%"  :before-close="handleAddClose">
         <el-form :model="newCate" :rules="rules" ref="ruleForm">
           <el-form-item label="上传分类头像" prop="categoryAvatar">
@@ -70,6 +71,7 @@
           <el-button type="primary" @click="addCate()">确 定</el-button>
         </span>
       </el-dialog>
+      
       <el-dialog title="修改分类" :visible.async="updateDialog" width="30%"  :before-close="handleUpdateClose">
         <el-form :model="uptCate" :rules="rules" ref="ruleForm">
           <el-form-item label="上传分类头像" prop="categoryAvatar">
