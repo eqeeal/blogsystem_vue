@@ -11,23 +11,26 @@ import Link from '../components/link/Link.vue'
 import System from '../components/system/System.vue'
 import Tag from '../components/tag/Tag.vue'
 import UpdatePwd from '../components/system/UpdatePwd.vue'
+import testComment from "@/components/comment/commentVue/testComment.vue";
 
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes: [
         { path: '/', redirect: '/login' },
         { path: '/login', component: Login },
+        { path: '/tc', component: testComment },
         {
             path: '/home', component: Home,
             children: [
                 { path: '/category', component: Category },
-                { path: '/blog', component: Blog }, 
+                { path: '/blog', component: Blog },
                 { path: '/comment', component: Comment },
                 { path: '/dashbord', component: Dashbord },
                 { path: '/link', component: Link },
                 { path: '/system', component: System },
                 { path: '/tag', component: Tag },
-                { path: '/updatePwd', component: UpdatePwd }
+                { path: '/updatePwd', component: UpdatePwd },
+
             ]
         },
     ]
