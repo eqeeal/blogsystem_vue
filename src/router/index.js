@@ -10,7 +10,10 @@ import Dashbord from '../components/dashbord/Dashbord.vue'
 import Link from '../components/link/Link.vue'
 import System from '../components/system/System.vue'
 import Tag from '../components/tag/Tag.vue'
+import Door from '../components/blog/Door.vue'
+import Deatil from '../components/blog/Detail.vue'
 import UpdatePwd from '../components/system/UpdatePwd.vue'
+import AddBlog from '../components/blog/AddBlog.vue'
 import testComment from "@/components/comment/commentVue/testComment.vue";
 
 Vue.use(VueRouter)
@@ -30,9 +33,13 @@ const router = new VueRouter({
                 { path: '/system', component: System },
                 { path: '/tag', component: Tag },
                 { path: '/updatePwd', component: UpdatePwd },
+                { path: '/addBlog', name:'AddBlog',component: AddBlog },
+                { path: '/updatePwd', component: UpdatePwd },
 
             ]
         },
+        { path: '/door', name:'Door',component: Door },
+        { path: '/detail', name:'Detail', component: Deatil },
     ]
 })
 
@@ -54,3 +61,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+

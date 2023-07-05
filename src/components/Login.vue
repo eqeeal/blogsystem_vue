@@ -64,10 +64,13 @@ export default {
         //验证码判断是否正确
         if (valid) {
           if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-            this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
+            this.$http.get('/user/login/?userPhone='+ this.userInfo.userphone + '&userPass=' + this.userInfo.userpass).then(res=>{
               // console.log(res)
               if(!res.data.success){
-                this.$message.error('用户名或密码错误，请重新登录')
+                this.$message({
+                  message: '用户名或密码错误，请重新登录',
+                  type: 'error'
+                })
               }else{
                 this.$message.success('登录成功')
                 //保存登录用户手机号
@@ -78,7 +81,10 @@ export default {
               }
             })
           } else {
-            this.$message.error('验证码错误')
+            this.$message({
+                  message: '验证码错误',
+                  type: 'error'
+              })
             this.codeText = this.randomCode("canvas1", 4)
             this.userInfo.inputcode = ''
           }
@@ -96,15 +102,20 @@ export default {
           .then(res=>{
           let type = res.data.success ? 'success' : 'error'
           let message = res.data.success ? '注册成功' : '注册失败，已存在该用户'
-          this.$message({message,type})
-          //注册成功，重置表单状态
+            this.$message({
+              message,
+              type
+            })
           this.codeText = this.randomCode("canvas1", 4)
           this.userphone = ''
           this.userpass = ''
           this.userInfo.inputcode = ''
         })
       } else {
-        this.$message.error('验证码错误')
+        this.$message({
+              message: '验证码错误',
+              type: 'error'
+          })
       }
     },
     randomCode(canvasId, letterLength) {
