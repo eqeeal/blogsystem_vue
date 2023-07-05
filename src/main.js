@@ -9,7 +9,7 @@ Vue.use(ElementUI)
 // 引入axios
 import axios from 'axios'
 Vue.prototype.$http = axios
-
+Vue.prototype.$host = "http://localhost:8081"
 Vue.config.productionTip = false
 
 
