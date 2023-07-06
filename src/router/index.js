@@ -15,17 +15,20 @@ import Door from '../components/blog/Door.vue'
 import Deatil from '../components/blog/Detail.vue'
 import UpdatePwd from '../components/system/UpdatePwd.vue'
 import AddBlog from '../components/blog/AddBlog.vue'
+import DoorLink from '../components/link/DoorLink.vue'
+import testComment from "@/components/comment/commentVue/testComment.vue";
 
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes: [
         { path: '/', redirect: '/login' },
         { path: '/login', component: Login },
+        { path: '/tc', component: testComment },
         {
             path: '/home', component: Home,
             children: [
                 { path: '/category', component: Category },
-                { path: '/blog', component: Blog }, 
+                { path: '/blog', component: Blog },
                 { path: '/comment', component: Comment },
                 { path: '/dashbord', component: Dashbord },
                 { path: '/link', component: Link },
@@ -34,10 +37,13 @@ const router = new VueRouter({
                 { path: '/user', component: User },
                 { path: '/updatePwd', component: UpdatePwd },
                 { path: '/addBlog', name:'AddBlog',component: AddBlog },
+                { path: '/updatePwd', component: UpdatePwd },
+
             ]
         },
         { path: '/door', name:'Door',component: Door },
         { path: '/detail', name:'Detail', component: Deatil },
+        { path: '/links', name:'Link', component: DoorLink },
     ]
 })
 router.beforeEach((to, from, next) => {
@@ -58,3 +64,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+
