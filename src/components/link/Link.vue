@@ -7,8 +7,8 @@
       <div class="main-content">
         <div class="box">
           <div class="choose-all"> 
-            <el-checkbox v-model="isChooseAll" @change="chooseAllChange" style="margin-right:10px">全选</el-checkbox>
-            <el-button type="text" @click="delBatch">批量删除</el-button>
+            <el-button v-model="isChooseAll" @change="chooseAllChange" style="margin-right:10px"></el-button>
+            <el-button type="text" @click="delBatch"></el-button>
           </div>
           <div class="top-operate">
             <el-button type="primary" @click="addDialog=true">添加</el-button>
@@ -60,7 +60,6 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="cancelAdd = false">取 消</el-button>
           <el-button type="primary" @click="addLink()">确 定</el-button>
         </span>
       </el-dialog>
@@ -122,7 +121,8 @@ export default {
           //页面数据数量,默认为5
           pageSize:5,
           //页面起始位置，默认为1
-          pageNum:1
+          pageNum:1,
+        
         }
     },
     watch:{
@@ -166,38 +166,38 @@ export default {
         })
       },
        // 批量删除
-       delBatch(){
-        let delList = this.linkList.filter(item=>item.isChoose==true)
-        let ids = delList.map(item => item.id)
-        if(delList.length == 0){
-          this.$message.warning('请选择需要删除的数据')
-        }else{
-          this.$confirm('此操作将永久删除分类, 是否继续?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$http({url:'/api/link/delLinks',method:'POST',data:{'ids':ids}}).then(res=>{
-               if(res.data.success){
-                this.$message.success('删除成功')
-              }else if(res.data.msg == '删除失败'){
-                this.$message.error('删除失败')
-              }else{
-                this.$message.error('删除失败!')
-              }
-              this.handleCurrentChange(this.pageNum)
-            })
-          }).catch(() => {
-            this.$message.info('已取消删除')    
-          })
-        }
-      },
+      //  delBatch(){
+      //   let delList = this.linkList.filter(item=>item.isChoose==true)
+      //   let ids = delList.map(item => item.id)
+      //   if(delList.length == 0){
+      //     this.$message.warning('请选择需要删除的数据')
+      //   }else{
+      //     this.$confirm('此操作将永久删除分类, 是否继续?', '提示', {
+      //       confirmButtonText: '确定',
+      //       cancelButtonText: '取消',
+      //       type: 'warning'
+      //     }).then(() => {
+      //       this.$http({url:'/api/link/delLinks',method:'POST',data:{'ids':ids}}).then(res=>{
+      //          if(res.data.success){
+      //           this.$message.success('删除成功')
+      //         }else if(res.data.msg == '删除失败'){
+      //           this.$message.error('删除失败')
+      //         }else{
+      //           this.$message.error('删除失败!')
+      //         }
+      //         this.handleCurrentChange(this.pageNum)
+      //       })
+      //     }).catch(() => {
+      //       this.$message.info('已取消删除')    
+      //     })
+      //   }
+      // },
       // 新增链接
       addLink(){
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
             this.$http({url:'/link/add', method:'POST', data:this.newLink }).then(res => {
-              if(res.data.success){
+              if(res.data.message==='添加成功'){
                 this.$message.success('添加成功')
               this.addDialog = false // 隐藏弹窗 并重新获取链接列表
               this.newLink.linkName=''
@@ -208,6 +208,7 @@ export default {
               let tmp = this.totalCount/this.pageSize
                 let num = tmp%1 == 0 ? tmp+1 : Math.ceil(tmp)
                 this.handleCurrentChange(num)
+                this.getAllLink()
               }else{
                 this.$message.error('已存在该链接，请重新添加')
               }

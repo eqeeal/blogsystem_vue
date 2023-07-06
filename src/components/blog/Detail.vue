@@ -5,7 +5,7 @@
         <div class="author">{{author}}</div>
         <div class="count">
           <span><i class="el-icon-date"></i>{{blog.createTime}}</span>/
-          <span><i class="el-icon-chat-dot-round"></i>10086条评论</span>/
+          <span><i class="el-icon-chat-dot-round"></i>{{ cout }}条评论</span>/
           <span><i class="el-icon-view"></i>{{blog.view}}浏览</span>
         </div>
         <div class="word">
@@ -15,25 +15,31 @@
         <hr />
       </div>
       <div v-html="blog.path" class="content"></div>
-      <div class="commont"></div>
+      <comment-list @tota="tota" :admin="false" :blog-id="blog.id" :blog-user-id="blog.userId"></comment-list>
     </div>
   </div>
 </template>
 
 <script>
 import $api from '@/api'
+import CommentList from "@/components/comment/commentVue/commentList.vue";
 
 export default {
+  components: {CommentList},
   data() {
     return {
       blog: "",
       author:"author",
+      cout:0,
     };
   },
   created() {
     this.blogDetail();
   },
   methods: {
+    tota(tota){
+      this.cout=tota;
+    },
     blogDetail() {
       let id = this.$route.query.id
      $api.blog.getById(id).then(res =>{
