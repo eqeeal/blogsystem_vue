@@ -14,6 +14,7 @@ import Door from '../components/blog/Door.vue'
 import Deatil from '../components/blog/Detail.vue'
 import UpdatePwd from '../components/system/UpdatePwd.vue'
 import AddBlog from '../components/blog/AddBlog.vue'
+import DoorLink from '../components/link/DoorLink.vue'
 
 Vue.use(VueRouter)
 const router = new VueRouter({
@@ -36,6 +37,7 @@ const router = new VueRouter({
         },
         { path: '/door', name:'Door',component: Door },
         { path: '/detail', name:'Detail', component: Deatil },
+        { path: '/links', name:'Link', component: DoorLink },
     ]
 })
 

@@ -97,7 +97,7 @@ export default {
     // 用户注册函数
     regist() {
       if(this.userInfo.inputcode.toUpperCase()===this.codeText.toUpperCase()){
-        this.$http({method:'post',url:'/api/user/add',
+        this.$http({method:'post',url:'/user/add',
                     data:{userName:this.userInfo.username,userPhone:this.userInfo.userphone,userPass:this.userInfo.userpass}})
           .then(res=>{
           let type = res.data.success ? 'success' : 'error'

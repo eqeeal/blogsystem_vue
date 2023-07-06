@@ -12,6 +12,8 @@ Vue.prototype.$http = axios
 Vue.prototype.$host = "http://localhost:8081"
 Vue.config.productionTip = false
 
+Vue.prototype.$request = $http
+
 
 new Vue({
   router,
