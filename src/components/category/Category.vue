@@ -193,7 +193,7 @@ export default {
       },
       //获取热门分类信息
       getHotCate(){
-        this.$http.get('/api/category/hotCate').then(res=>{
+        this.$http.get('/category/hotCate').then(res=>{
           //让分类下的博客数量乘以88的形式来代替热度
           res.data.data.forEach(item=>{
             item.count = item.count*88
@@ -203,7 +203,7 @@ export default {
       },
       //获取全部分类信息
       getAllCate(){
-        this.$http.get('/api/category/getCate').then(res => {
+        this.$http.get('/category/getCate').then(res => {
           // 给每个数据项添加一个是否选中的属性 默认为false
           res.data.data.list.forEach(cate => {
             cate.isChoose = false          
@@ -224,7 +224,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.$http({url:'/api/category/delBatch',method:'POST',data:{'ids':ids}}).then(res=>{
+            this.$http({url:'/category/delBatch',method:'POST',data:{'ids':ids}}).then(res=>{
                if(res.data.success){
                 this.$message.success('删除成功')
               }else if(res.data.msg == '选择的分类存在关联的博客，删除失败'){
@@ -243,7 +243,7 @@ export default {
       addCate(){
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            this.$http({url:'/api/category/addCate', method:'POST', data:this.newCate }).then(res => {
+            this.$http({url:'/category/addCate', method:'POST', data:this.newCate }).then(res => {
               if(res.data.success){
                 this.$message.success('添加成功')
                 this.addDialog = false // 隐藏弹窗 并重新获取分类列表
@@ -279,7 +279,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.post('/api/category/delCate/?id='+id).then(res => {
+          this.$http.post('/category/delCate/?id='+id).then(res => {
             if(res.data.success){
               this.$message.success('删除成功')
             }else if(res.data.msg == '该分类存在关联的博客，删除失败'){
@@ -304,7 +304,7 @@ export default {
       },
       //修改分类
       async updateCate(){
-        await this.$http.post('/api/category/updateCate', this.uptCate).then(res => {
+        await this.$http.post('/category/updateCate', this.uptCate).then(res => {
           if(res.data.success){
             this.$message.success('修改成功')
             this.updateDialog = false
@@ -348,7 +348,7 @@ export default {
       handleSizeChange(pageSize){
         this.isChooseAll = false
         this.pageSize = pageSize
-        this.$http({url:'/api/category/pagin',method:'POST',params:{'categoryName':this.searchInput,'pageNum':this.pageNum,'pageSize':this.pageSize}})
+        this.$http({url:'/category/pagin',method:'POST',params:{'categoryName':this.searchInput,'pageNum':this.pageNum,'pageSize':this.pageSize}})
         .then(res=>{
           // 给每个数据项添加一个是否选中的属性 默认为false
           res.data.data.list.forEach(cate => {
@@ -362,7 +362,7 @@ export default {
       handleCurrentChange(pageNum){
         this.isChooseAll = false
         this.pageNum = pageNum
-        this.$http({url:'/api/category/pagin',method:'POST',params:{'categoryName':this.searchInput,'pageNum':this.pageNum,'pageSize':this.pageSize}})
+        this.$http({url:'/category/pagin',method:'POST',params:{'categoryName':this.searchInput,'pageNum':this.pageNum,'pageSize':this.pageSize}})
         .then(res=>{
           // 给每个数据项添加一个是否选中的属性 默认为false
           res.data.data.list.forEach(cate => {
@@ -375,7 +375,7 @@ export default {
       //搜索(带页码和页内数量)
       search(){
         console.log("0.5s后调用了search")
-        this.$http({url:'/api/category/pagin',method:'POST',params:{'categoryName':this.searchInput,'pageNum':this.pageNum,'pageSize':this.pageSize}})
+        this.$http({url:'/category/pagin',method:'POST',params:{'categoryName':this.searchInput,'pageNum':this.pageNum,'pageSize':this.pageSize}})
         .then(res=>{
           this.cateList = res.data.data.list
           this.totalCount = res.data.data.count

@@ -229,6 +229,7 @@ export default {
       var data = {
         pageSize: this.pageInfo.pageSize,
         pageNum: this.pageInfo.currentPage,
+        userId: localStorage.getItem("userId"),
         title: this.keyWords,
       };
       return data;

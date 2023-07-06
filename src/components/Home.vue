@@ -114,7 +114,8 @@ export default {
          $api.blog.getUserId().then(res=>{
          localStorage.setItem("userId",res.data.data)
          this.$router.push("Door");
-      }),
+      })
+      },
       //退出登录
       logOut()
       {
@@ -129,7 +130,6 @@ export default {
           }).catch(()=>{
             this.$message.info('已取消')
           })
-      }
     }
     }
 }
