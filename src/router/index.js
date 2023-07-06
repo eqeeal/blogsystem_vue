@@ -11,6 +11,10 @@ import Link from '../components/link/Link.vue'
 import System from '../components/system/System.vue'
 import Tag from '../components/tag/Tag.vue'
 import User from '../components/system/user.vue'
+import Door from '../components/blog/Door.vue'
+import Deatil from '../components/blog/Detail.vue'
+import UpdatePwd from '../components/system/UpdatePwd.vue'
+import AddBlog from '../components/blog/AddBlog.vue'
 
 Vue.use(VueRouter)
 const router = new VueRouter({
@@ -28,26 +32,29 @@ const router = new VueRouter({
                 { path: '/system', component: System },
                 { path: '/tag', component: Tag },
                 { path: '/user', component: User },
+                { path: '/updatePwd', component: UpdatePwd },
+                { path: '/addBlog', name:'AddBlog',component: AddBlog },
             ]
         },
+        { path: '/door', name:'Door',component: Door },
+        { path: '/detail', name:'Detail', component: Deatil },
     ]
 })
-
-// router.beforeEach((to, from, next) => {
-//     if (to.path.includes("/home")) {
-//         let loginuser = localStorage.getItem("LoginUser")
-//         if (loginuser) {
-//             //有，则正常跳转
-//             next()//放行
-//         } else {
-//             //没有，则重定向到登录页面
-//             alert('请先登录！')
-//             next("/login")
-//         }
-//     } else {
-//         //去的不是home，直接放行
-//         next()//用于放行表示正常跳转
-//     }
-// })
+router.beforeEach((to, from, next) => {
+    if (to.path.includes("/home")) {
+        let loginuser = localStorage.getItem("LoginUser")
+        if (loginuser) {
+            //有，则正常跳转
+            next()//放行
+        } else {
+            //没有，则重定向到登录页面
+            alert('请先登录！')
+            next("/login")
+        }
+    } else {
+        //去的不是home，直接放行
+        next()//用于放行表示正常跳转
+    }
+})
 
 export default router
