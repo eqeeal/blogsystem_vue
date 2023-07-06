@@ -234,12 +234,14 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$http.post('/link/del/?id='+id).then(res => {
-            if(res.data.success){
-              this.$message.success('删除成功')
+          this.$http.post('/link/del',{"id":id}).then(res => {
+            if(res.data.code === 200){
+              this.$message.success(res.data.message)
+              this.getAllLink()
             }else{
               this.$message.error('删除失败！')
             }
+
           })
         }).catch(() => {
           this.$message.info('已取消删除')    
@@ -290,6 +292,9 @@ export default {
       //修改分类弹框的关闭事件
       handleUpdateClose(){
         this.updateDialog = false
+      },
+      handleCurrentChange(){
+        
       },
      /* // 每页多少条变化的回调函数
       handleSizeChange(pageSize){

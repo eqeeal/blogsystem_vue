@@ -149,6 +149,8 @@ export default {
       })
         .then(() => {
           window.localStorage.removeItem("LoginUser");
+          window.localStorage.removeItem("userId");
+          window.localStorage.removeItem("LoginUserId");
           this.$router.push("/login");
           this.$message.success("退出登录成功！");
         })

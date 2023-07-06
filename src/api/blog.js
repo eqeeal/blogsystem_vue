@@ -51,6 +51,7 @@ export default {
     },
     getUserInfo(){
         var phone = localStorage.getItem("LoginUser")
+        if(phone==null)return;
         return request({
             method:'get',
             url:`/user/getNowUserInfo`,
@@ -59,6 +60,7 @@ export default {
     },
     getUserId(){
         var phone = localStorage.getItem("LoginUser")
+        if(phone == null)return;
         return request({
             method:'get',
             url:`/user/getNowUserId`,
@@ -79,6 +81,7 @@ export default {
     },
     getBlogInfo(){
         var id = localStorage.getItem("userId")
+        if(id==null)id=-1;
         return request({
             method:'get',
             url:`${name}/getCountInfo/${id}`,
@@ -104,7 +107,7 @@ export default {
     },
     getHotTagsByUserId(){
         var id = localStorage.getItem("userId")
-
+        if(id==null)return;
         return request({
             method:'get',
             url:`/tag/getHotByUserId`,

@@ -13,11 +13,11 @@
         </el-input>
       </el-col>
     </el-row>
-    <!-- <el-row type="flex" class="head">
+    <el-row type="flex" class="head">
       <div style="width: 100%; text-align: center">
-        <img class="avatar" v-if="userAvatar" :src="userAvatar"/>
+        <!-- <img class="avatar" v-if="userAvatar" :src="userAvatar"/>
         <img class="avatar" v-else :src="$host + '/common/download?name=read.jpg'" alt="头像" />
-        <p>{{userName}}</p>
+        <p>{{userName}}</p> -->
         <el-col :span="8">
           文章
           <p>{{count.blog}}</p>
@@ -32,7 +32,7 @@
         </el-col>
       </div>
       <div></div>
-    </el-row> -->
+    </el-row>
     <el-row type="flex" class="tag">
        <el-col >
          <span> 热门标签 </span>
@@ -100,7 +100,7 @@ export default {
   },
   created(){
     this.getNew();
-    this.getUserInfo();
+    // this.getUserInfo();
     this.getBlogInfo();
     this.getHotTags();
     this.getHotCategory();

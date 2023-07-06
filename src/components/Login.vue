@@ -112,18 +112,18 @@ export default {
                   //保存登录用户手机号
                   localStorage.setItem("LoginUser", this.userInfo.userphone);
                   localStorage.setItem("LoginUserId", res.data.data);
-
+                  localStorage.setItem("userId",res.data.data)
                   //登录成功，页面跳转到首页
                   $api.blog.getUserId().then((res) => {
                     localStorage.setItem("userId", res.data.data);
                     this.$router.push("Door");
                   });
-                  this.$router.push({
-                    path: "/dashbord",
-                    // query:{
-                    //   id:res.data.data[0].id
-                    // }
-                  });
+                  // this.$router.push({
+                  //   path: "/dashbord",
+                  //   // query:{
+                  //   //   id:res.data.data[0].id
+                  //   // }
+                  // });
                 }
               });
           } else {

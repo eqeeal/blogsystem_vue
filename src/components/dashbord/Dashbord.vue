@@ -67,6 +67,7 @@ export default {
       tags: [],
       blogCount: [],
       option: {
+        
         title: {
           text: "每个标签对应的博客数",
         },
@@ -74,6 +75,10 @@ export default {
         xAxis: {
           // data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
           data: [],
+          axisLabel:{
+            interval:0,
+          },
+          
         },
         yAxis: {},
         series: [
@@ -156,7 +161,7 @@ export default {
       },
       option3: {
           title: {
-          text: "发布博客最多的五个人",
+          text: "当前用户的某个博客收到的评论数",
         },
         xAxis: {
           type: "category",
@@ -202,13 +207,16 @@ export default {
   methods: {
     //每个标签对应的博客数
     async getALL() {
-      let res = await $UserHttp.reltagblogHttp.getTagName();
-      this.option.xAxis.data = res.data;
-      // console.log(this.option.xAxis.data);
-      let re = await $UserHttp.reltagblogHttp.getblogcountbytag();
-      this.option.series[0].data = re.data;
-      // console.log(this.option.series[0].data)
-      mycharts.setOption(this.option);
+      let res = await $UserHttp.reltagblogHttp.tagAndCount();
+      console.log(res.data.data)
+      let xarr = res.data.data.map(v=> {return v.name});
+      this.option.xAxis.data = xarr
+      let yarr = res.data.data.map(v=> {return v.ct});
+      this.option.series[0].data = yarr
+      console.log(xarr)
+      console.log(yarr)
+  
+      mycharts.setOption(this.option,true);
     },
     //用户发布博客数量最多的五个人
     async getBlogCount() {

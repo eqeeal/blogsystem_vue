@@ -20,9 +20,15 @@ function getCategoryCount(){
         url:"/relTagBlog/getCategoryCount"
     })
 }
+function tagAndCount(){
+    return request({
+        url:"/relTagBlog/tagAndCount"
+    })
+}
 export default{
     getblogcountbytag,
     getTagName,
     getBlogCount,
-    getCategoryCount
+    getCategoryCount,
+    tagAndCount
 }
