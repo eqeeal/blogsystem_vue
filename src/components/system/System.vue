@@ -99,7 +99,7 @@ export default {
   },
   methods:{
     async getSystemById(){
-        let userId=localStorage.getItem("LoginUserId");//获取会话里面存储的
+        let userId=localStorage.getItem("userId");//获取会话里面存储的
       // console.log(userId)
      let res = await $UserHttp.systemHttp.getSystemById(userId);
       console.log(res)

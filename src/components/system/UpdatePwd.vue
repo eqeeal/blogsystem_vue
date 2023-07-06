@@ -99,10 +99,10 @@ export default {
       this.$refs['ruleForm'].validate(async (valid) => {
         if(valid){
           //修改之前判断旧密码是否正确
-          await this.$http.get('/api/user/login/?userPhone='+ this.userInfo.userPhone + '&userPass=' + this.userInfo.oldPass).then(res => {
+          await this.$http.get('/user/login/?userPhone='+ this.userInfo.userPhone + '&userPass=' + this.userInfo.oldPass).then(res => {
             //旧密码正确
             if(res.data.success){
-              this.$http({url:'/api/user/updatePass',method:'POST',data:{'userPhone':this.userInfo.userPhone,'userPass':this.userInfo.userPass}}).then(res => {
+              this.$http({url:'/user/updatePass',method:'POST',data:{'userPhone':this.userInfo.userPhone,'userPass':this.userInfo.userPass}}).then(res => {
               if(res.data.success){
                 this.$message.success('修改密码成功')
                 this.userInfo={

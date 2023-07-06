@@ -128,4 +128,5 @@ export default {
     page1,
     add,
     getBlogByUserId,
+    getEchartsData
 }
