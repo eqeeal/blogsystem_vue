@@ -85,5 +85,42 @@ export default {
             // method:'get',
             // url:`/tag/getTagOptions/${id}`,
         })
+    },
+    getHotTags(){
+        return request({
+            method:'get',
+            url:`/tag/getHot`,
+            // method:'get',
+            // url:`/tag/getTagOptions/${id}`,
+        })
+    },
+    getHotCategory(){
+        return request({
+            method:'get',
+            url:`/category/hotCategory`,
+            // method:'get',
+            // url:`/tag/getTagOptions/${id}`,
+        })
+    },
+    getHotTagsByUserId(){
+        var id = localStorage.getItem("userId")
+
+        return request({
+            method:'get',
+            url:`/tag/getHotByUserId`,
+            params:{"id":id}
+            // method:'get',
+            // url:`/tag/getTagOptions/${id}`,
+        })
+    },
+    getHotCategoryByUserId(){
+        var id = localStorage.getItem("userId")
+        return request({
+            method:'get',
+            url:`/category/getHotCategoryByUserId`,
+            params:{id:id}
+            // method:'get',
+            // url:`/tag/getTagOptions/${id}`,
+        })
     }
 }

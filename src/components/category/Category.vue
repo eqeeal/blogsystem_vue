@@ -63,6 +63,7 @@
         </div>
       </div>
       <!-- 添加新分类弹框 -->
+
       <el-dialog title="添加新分类" :visible.async="addDialog" width="30%"  :before-close="handleAddClose">
         <el-form :model="newCate" :rules="rules" ref="ruleForm">
           <el-form-item label="上传分类头像" prop="categoryAvatar">
@@ -88,6 +89,7 @@
         </span>
       </el-dialog>
       <!-- 修改分类弹框 -->
+      
       <el-dialog title="修改分类" :visible.async="updateDialog" width="30%"  :before-close="handleUpdateClose">
         <el-form :model="uptCate" :rules="rules" ref="ruleForm">
           <el-form-item label="上传分类头像" prop="categoryAvatar">
@@ -290,7 +292,7 @@ export default {
             //删除时，如果页面没有数据了，就跳转到上一页
             // let tmp = this.totalCount/this.pageSize
             // let num = tmp%1 == 0 ? Math.ceil(tmp)-1 : Math.ceil(tmp)
-            this.handleCurrentChange(Math.ceil(this.totalCount/this.pageSize))
+            this.handleCurrentChange(this.pageNum)
           })
         }).catch(() => {
           this.$message.info('已取消删除')    

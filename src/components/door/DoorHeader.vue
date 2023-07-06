@@ -4,7 +4,7 @@
       <div>
         <div class="user">Hello</div>
         <div class="link">
-          <router-link class="li" to="/">主页</router-link>
+          <span class="li" @click="loginOrNot()">主页</span>
           <router-link class="li" to="/links">友链</router-link>
           <router-link class="li" to="/about">关于</router-link>
           <a href="https://github.com" target="_blank" class="li" to="/about">github</a>
@@ -22,6 +22,15 @@ export default {
       setNavBarVisible: false,
     };
   },
+  methods:{
+    loginOrNot(){
+      if(localStorage.getItem("userId")!=null){
+        this.$router.push("/home")
+      }else{
+         this.$router.push("/login")
+      }
+    }
+  }
 };
 </script>
 

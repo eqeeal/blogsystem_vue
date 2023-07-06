@@ -67,6 +67,7 @@
         :total="total">
     </el-pagination>
     <el-table
+        @row-dblclick="rowClick"
         max-height="10%"
         ref="commentTab"
         :data="recommentList"
@@ -130,12 +131,36 @@
           <div>
             <el-button
                 size="mini"
-                @click="commentId=scope.row.id;centerDialogVisible1=true;index=scope.$index">回复</el-button>
+                @click="c_row=scope.row;centerDialogVisible1=true;index=scope.$index">回复</el-button>
           </div>
         </template>
       </el-table-column>
     </el-table>
     </el-card>
+    <el-dialog
+        title="回复评论"
+        :visible.sync="centerDialogVisible1"
+        width="30%"
+        center>
+      <el-row>
+        <el-col :span="20">
+          <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="cleanOpst">取 消</el-button>
+    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>
+  </span>
+    </el-dialog>
+    <el-dialog
+        title="评论详细"
+        :visible.sync="centerDialogVisible2"
+        width="40%"
+        center>
+      <el-row>
+        <commentItem :admin="true" :item="row"></commentItem>
+      </el-row>
+    </el-dialog>
     <el-dialog
         title="发送评论"
         :visible.sync="centerDialogVisible"
@@ -167,38 +192,6 @@
     <el-button type="primary" @click="postMainComment">确 定</el-button>
   </span>
     </el-dialog>
-
-    <el-dialog
-        title="发送评论"
-        :visible.sync="centerDialogVisible1"
-        width="30%"
-        center>
-      <el-row>
-        <el-col :span="20">
-          <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>
-        </el-col>
-        <el-col :span="4">
-          <div style="margin: 0 auto;width: 100%">
-            <el-upload
-                class="avatar-uploader"
-                action="http://localhost:8081/common/upload"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-
-              <i class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-          </div>
-        </el-col>
-        <img v-if="imageUrl" :src="imageUrl" style="width: 240px;height: 240px">
-      </el-row>
-
-
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="cleanOpst">取 消</el-button>
-    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>
-  </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -216,6 +209,7 @@ export default {
       imageUrl: '',
       centerDialogVisible: false,
       centerDialogVisible1: false,
+      centerDialogVisible2: false,
       showBeBanned:false,
       pageQuary:{},
       recommentList:[],
@@ -225,7 +219,9 @@ export default {
       index:null,
       input:'',
       photo:'',
-      commentId:null
+      commentId:null,
+      row:'',
+      c_row:''
     }
   },
   watch:{
@@ -246,6 +242,26 @@ export default {
     this.init();
   },
   methods:{
+    // postre1(row){
+    //   this.centerDialogVisible1=true;
+    //   this.c_row=row;
+    // },
+    // postre(){
+    //   // console.log(data)
+    //   let userId=localStorage.getItem("LoginUserId");
+    //   let s=2;
+    //   if(Number(userId)===this.blogUserId){
+    //     s=1;
+    //   }
+    //   let data={commentId:this.c_row.id,status:s,content:this.input,userId:userId,photo:this.photo};
+    //   this.$requst.commentHttp.handlePostRecomment(data);
+    //   this.recommentList.at(this.index).recommentCount+=1;
+    //   this.cleanOpst();
+    // },
+    rowClick(row, event, column){
+      this.centerDialogVisible2=true;
+      this.row=row;
+    },
     handleAvatarSuccess(res, file) {
       this.photo=res.data
       this.imageUrl = URL.createObjectURL(file.raw);
@@ -270,15 +286,30 @@ export default {
       }
       let data={blogId:this.blogId,status:s,content:this.input,userId:userId,photo:this.photo};
       this.$requst.commentHttp.handlePostComment(data);
+
+      if(this.pageQuary.page===1){
+        setTimeout(()=>{
+          this.$requst.commentHttp.setPageData(this);
+        },200)
+      }
+      else {
+        this.total+=1;
+      }
       this.cleanOpst();
     },
     handlePostRecomment(){
       let userId=localStorage.getItem("LoginUserId");
       let s=2;
+      let data={};
       if(Number(userId)===this.blogUserId){
         s=1;
       }
-      let data={commentId:this.commentId,status:s,content:this.input,userId:userId,photo:this.photo};
+      if(this.c_row!==null){
+        data={commentId:this.c_row.id,status:s,content:this.input,userId:userId,photo:this.photo};
+      }
+      else {
+        data={commentId:this.commentId,status:s,content:this.input,userId:userId,photo:this.photo};
+      }
       this.$requst.commentHttp.handlePostRecomment(data);
       this.recommentList.at(this.index).recommentCount+=1;
       this.cleanOpst();
@@ -290,6 +321,7 @@ export default {
       this.imageUrl='';
       this.input=null;
       this.commentId=null;
+      this.c_row=null;
     },
     clickMultiSelect(){
       this.multipleSelection=this.$refs.commentTab.selection;

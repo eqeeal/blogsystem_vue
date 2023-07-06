@@ -18,7 +18,7 @@ async function updateComment(id1,i) {
     })
 }
 async function getBlog(page,pageSize) {
-    let userid=localStorage.getItem("userId");
+    let userid=localStorage.getItem("LoginUserId");
     return await request({
         url:"/blog/page",
         method:"get",
@@ -39,6 +39,7 @@ async function getBlogNonCount(id) {
     })
 }
 function setPageData(e) {
+
     if(e.blogId!==null){
         getCommentPage(e.pageQuary).then(re=>{
             e.recommentList=re.data.data.records;
@@ -66,7 +67,10 @@ function updateCommentStuats(id,i) {
     updateComment(id,i)
 }
 function getImage (image) {
-    return `api/common/download?name=${image}`
+    return `${image}`
+}
+function getImage1 (image) {
+    return `api/common/downlaod?name=${image}`
 }
 // eslint-disable-next-line no-unused-vars
 async function handlePostRecomment(data){
@@ -83,7 +87,54 @@ async function handlePostComment(data){
         data
     })
 }
+async function getUserInfoById(id){
+    return await request({
+        url:"/user/getInfoById",
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+}
+async function getUserInfoByPid(pid){
+    return await request({
+        url:"/user/getInfoByPid",
+        method:"get",
+        params:{
+            id:pid
+        }
+    })
+}
+async function getRecommentPage(data) {
+    return await request({
+        url:"/recomment/getPageRecommentFromMainComment",
+        method:"post",
+        data
+    })
+}
+async function getRecomentReCount(id) {
+    return await request({
+        url:"/recomment/getRecomentReCount",
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+}
+async function getById(id) {
+    return await request({
+        url:"/comment/getById",
+        method:"get",
+        params:{
+            id:id
+        }
+    })
+}
+
 export default {
+    getById,
+    getRecomentReCount,
+    getUserInfoById,
     getCommentPage,
     updateComment,
     getBlog,
@@ -93,5 +144,7 @@ export default {
     updateCommentStuats,
     getImage,
     handlePostRecomment,
-    handlePostComment
+    handlePostComment,
+    getRecommentPage,
+    getUserInfoByPid,
 }

@@ -46,7 +46,7 @@
       <el-col >
          <span> 分类 </span>
          <hr />
-        <div v-for="(item,index) in tags" :key="index">
+        <div v-for="(item,index) in categorys" :key="index">
           <span class="category-unit">{{item.name}}({{item.count}})</span>
        </div>
       </el-col>
@@ -86,32 +86,8 @@ export default {
         tag:'',
         category:''
       },
-      tags: [
-        {
-          name: "RESTful",
-          count: 6,
-        },
-        {
-          name: "Redis",
-          count: 2,
-        },
-        {
-          name: "Spring",
-          count: 3,
-        },
-        {
-          name: "Redis",
-          count: 2,
-        },
-        {
-          name: "Redis",
-          count: 2,
-        },
-        {
-          name: "Redis",
-          count: 2,
-        },
-      ],
+      tags: [],
+      categorys:[],
       tagOptions:[],
       categoryOptions:[],
       blogData:{},
@@ -126,8 +102,8 @@ export default {
     this.getNew();
     this.getUserInfo();
     this.getBlogInfo();
-    // this.getHotTags();
-    // this.getCategory();
+    this.getHotTags();
+    this.getHotCategory();
   },
   methods:{
     search(){
@@ -171,6 +147,16 @@ export default {
     },
      blogDetail(id){
       this.$router.push({name:"Detail",query:{id:id}})
+    },
+    getHotTags(){
+      $api.blog.getHotTags().then(res=>{
+        this.tags = res.data.data
+      })
+    },
+    getHotCategory(){
+      $api.blog.getHotCategory().then(res=>{
+        this.categorys = res.data.data
+      })
     }
   }
 };

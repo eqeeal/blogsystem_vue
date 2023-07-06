@@ -10,6 +10,7 @@ import Dashbord from '../components/dashbord/Dashbord.vue'
 import Link from '../components/link/Link.vue'
 import System from '../components/system/System.vue'
 import Tag from '../components/tag/Tag.vue'
+import User from '../components/system/user.vue'
 import Door from '../components/blog/Door.vue'
 import Deatil from '../components/blog/Detail.vue'
 import UpdatePwd from '../components/system/UpdatePwd.vue'
@@ -17,24 +18,31 @@ import AddBlog from '../components/blog/AddBlog.vue'
 import DoorDetail from '../components/door/DoorDetail.vue'
 import DoorHome from '../components/door/DoorHome.vue'
 
+import DoorLink from '../components/link/DoorLink.vue'
+import testComment from "@/components/comment/commentVue/testComment.vue";
 
 Vue.use(VueRouter)
 const router = new VueRouter({
     routes: [
-        { path: '/', redirect: '/login' },
+        { path: '/', redirect: '/DoorHome' },
         { path: '/login', component: Login },
+        { path: '/tc', component: testComment },
         {
             path: '/home', component: Home,
             children: [
+                { path: '/', component: Dashbord },
                 { path: '/category', component: Category },
-                { path: '/blog', component: Blog }, 
+                { path: '/blog', component: Blog },
                 { path: '/comment', component: Comment },
                 { path: '/dashbord', component: Dashbord },
                 { path: '/link', component: Link },
                 { path: '/system', component: System },
                 { path: '/tag', component: Tag },
+                { path: '/user', component: User },
                 { path: '/updatePwd', component: UpdatePwd },
                 { path: '/addBlog', name:'AddBlog',component: AddBlog },
+                { path: '/updatePwd', component: UpdatePwd },
+
             ]
         },
         { path: '/door', name:'Door',component: Door },
@@ -42,9 +50,9 @@ const router = new VueRouter({
         { path: '/doorDetail', name:'doorDetail',component: DoorDetail },
         { path: '/doorHome', name:'doorHome',component: DoorHome },
 
+        { path: '/links', name:'Link', component: DoorLink },
     ]
 })
-
 router.beforeEach((to, from, next) => {
     if (to.path.includes("/home")) {
         let loginuser = localStorage.getItem("LoginUser")
@@ -63,3 +71,4 @@ router.beforeEach((to, from, next) => {
 })
 
 export default router
+

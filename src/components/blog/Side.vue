@@ -15,7 +15,7 @@
     </el-row>
     <el-row type="flex" class="head">
       <div style="width: 100%; text-align: center">
-        <img class="avatar" v-if="userAvatar" :src="userAvatar"/>
+        <img class="avatar" v-if="avatar" :src="avatar"/>
         <img class="avatar" v-else :src="$host + '/common/download?name=read.jpg'" alt="头像" />
         <p>{{userName}}</p>
         <el-col :span="8">
@@ -46,7 +46,7 @@
       <el-col >
          <span> 分类 </span>
          <hr />
-        <div v-for="(item,index) in tags" :key="index">
+        <div v-for="(item,index) in categorys" :key="index">
           <span class="category-unit">{{item.name}}({{item.count}})</span>
        </div>
       </el-col>
@@ -79,7 +79,7 @@ import $api from "@/api"
 export default {
   data() {
     return {
-      avatar: "38.jpg",
+      avatar: '',
       userName:"userName",
       count:{
         blog:'',
@@ -112,10 +112,11 @@ export default {
           count: 2,
         },
       ],
+      categorys:[],
       tagOptions:[],
       categoryOptions:[],
       blogData:{},
-      keyWords:'',
+      keyWords:' ',
       pageInfo: {
         pageSize: 10,
         currentPage: 1,
@@ -126,8 +127,8 @@ export default {
     this.getNew();
     this.getUserInfo();
     this.getBlogInfo();
-    // this.getHotTags();
-    // this.getCategory();
+    this.getHotTags();
+    this.getHotCategory();
   },
   methods:{
     search(){
@@ -171,6 +172,16 @@ export default {
     },
      blogDetail(id){
       this.$router.push({name:"Detail",query:{id:id}})
+    },
+    getHotTags(){
+      $api.blog.getHotTagsByUserId().then(res=>{
+        this.tags = res.data.data
+      })
+    },
+    getHotCategory(){
+      $api.blog.getHotCategoryByUserId().then(res=>{
+        this.categorys = res.data.data
+      })
     }
   }
 };
