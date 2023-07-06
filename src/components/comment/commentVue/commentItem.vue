@@ -1,6 +1,7 @@
 <template>
   <div class="main">
     <el-row>
+      <div v-if="item.status!==0">
       <el-col :span="3"><getavatarby-user-id :user-id="item.userId"></getavatarby-user-id></el-col>
       <el-col :span="21">
         <div>{{item.name}}</div>
@@ -27,23 +28,43 @@
           </div>
         </div>
       </el-col>
+      </div>
     </el-row>
     <div v-if="admin">
-      <el-dialog
-          title="提示"
-          :visible.sync="dialogVisible1"
-          width="30%"
-          append-to-body>
-        <el-row>
-          <el-col :span="20">
-            <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>
+      <div style="position: fixed;bottom: 0;width: 30%;background-color: white;border-radius: 5px">
+        <el-row :gutter="20">
+          <el-col :span="14">
+            <div style="margin-top: 20px;margin-left: 10px">
+              <el-input v-model="input"   maxlength="80" show-word-limit :placeholder="'回复给楼主:'+item.name"  prefix-icon="el-icon-search"></el-input>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div style="margin-top: 20px;margin-left: 10px">
+              <el-button type="primary" @click="handlePostRecomment" icon="el-icon-edit" round>发送</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div  style="margin-top: 29px;margin-left: 5px">
+              <i @click="input=''" style="scale: 2.1" class="el-icon-circle-close"></i>
+            </div>
           </el-col>
         </el-row>
-        <span slot="footer" class="dialog-footer">
-    <el-button @click="cleanOpst">取 消</el-button>
-    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>
-  </span>
-      </el-dialog>
+      </div>
+<!--      <el-dialog-->
+<!--          title="提示"-->
+<!--          :visible.sync="dialogVisible1"-->
+<!--          width="30%"-->
+<!--          append-to-body>-->
+<!--        <el-row>-->
+<!--          <el-col :span="20">-->
+<!--            <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>-->
+<!--          </el-col>-->
+<!--        </el-row>-->
+<!--        <span slot="footer" class="dialog-footer">-->
+<!--    <el-button @click="cleanOpst">取 消</el-button>-->
+<!--    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>-->
+<!--  </span>-->
+<!--      </el-dialog>-->
     </div>
 <!--    <div><userinfotopshow :name="item.name" :userId="item.userId"></userinfotopshow></div>-->
   </div>
@@ -63,7 +84,7 @@ export default {
       input:'',
       showMore:false,
       info:{},
-      count:0
+      count:0,
     }
   },
   watch:{

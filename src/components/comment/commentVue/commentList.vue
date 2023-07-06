@@ -10,7 +10,7 @@
           v-infinite-scroll="load"
           infinite-scroll-disabled="disabled">
         <div v-for="item in recommentList" class="list-item">
-          <comment-item :f1="f1" :c="commentInfo" :f2="f2" @post="postRe" @post1="postRe1" :admin="admin" :item="item"></comment-item>
+          <comment-item  :f1="f1" :c="commentInfo" :f2="f2" @post="postRe" @post1="postRe1" :admin="admin" :item="item"></comment-item>
         </div>
       </ul>
       <div style="text-align: center">
@@ -23,20 +23,21 @@
       &nbsp;
     </div>
   </div>
-  <div v-if="showaddphoto" style="position: fixed;bottom: 80px;right: 0;width: 15%;height: 80px;">
+  <div style="position:fixed;bottom: 0;width: 80%;text-align: center;">
+  <div v-if="showaddphoto" style="bottom: 80px;right: 0;width: 15%;height: 80px;">
     <el-upload
         class="avatar-uploader"
         action="http://localhost:8081/common/upload"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload">
-      <div v-if="imageUrl" style="position: fixed;bottom: 100px;right: 50px;">
+      <div v-if="imageUrl" style="bottom: 100px;right: 50px;">
             <img :src="imageUrl" style="width: auto;height: 120px;">
       </div>
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
   </div>
-  <div style="position: fixed;bottom: 0;width: 100%;height: 80px;background-color: white">
+  <div v-if="co" style="bottom: 0;width: 100%;height: 80px;background-color: white;border-radius: 10px;">
     <el-row :gutter="20">
       <el-col :span="20">
         <div style="margin-top: 20px;margin-left: 10px">
@@ -56,7 +57,7 @@
       </el-col>
     </el-row>
   </div>
-  <div v-if="showComInput" style="z-index: 200;position: fixed;bottom: 0;width: 100%;height: 80px;background-color: white">
+  <div v-if="showComInput" style="z-index: 900;bottom: 0;width: 100%;height: 80px;background-color: white;border-radius: 10px;">
     <el-row :gutter="20">
       <el-col :span="20">
         <div style="margin-top: 20px;margin-left: 10px">
@@ -71,12 +72,12 @@
       </el-col>
       <el-col :span="2">
         <div  style="margin-top: 29px;margin-left: 5px">
-          <i @click="showComInput=false" style="scale: 2.1" class="el-icon-circle-close"></i>
+          <i @click="showComInput=false;co=true" style="scale: 2.1" class="el-icon-circle-close"></i>
         </div>
       </el-col>
     </el-row>
   </div>
-  <div v-if="showRecomInput" style="z-index: 200;position: fixed;bottom: 0;width: 100%;height: 80px;background-color: white">
+  <div v-if="showRecomInput" style="z-index: 900;bottom: 0;width: 100%;height: 80px;background-color: white;border-radius: 10px;">
     <el-row :gutter="20">
       <el-col :span="20">
         <div style="margin-top: 20px;margin-left: 10px">
@@ -90,23 +91,26 @@
       </el-col>
       <el-col :span="2">
         <div  style="margin-top: 29px;margin-left: 5px">
-          <i @click="showRecomInput=false" style="scale: 2.1" class="el-icon-circle-close"></i>
+          <i @click="showRecomInput=false;co=true" style="scale: 2.1" class="el-icon-circle-close"></i>
         </div>
       </el-col>
     </el-row>
+  </div>
   </div>
 </div>
 </template>
 
 <script>
 import CommentItem from "@/components/comment/commentVue/commentItem.vue";
+import Dashbord from "@/components/dashbord/Dashbord.vue";
 
 export default {
   name: "commentList",
-  components: {CommentItem},
+  components: {Dashbord, CommentItem},
   props:["admin","blogId","blogUserId"],
   data(){
     return{
+      co:true,
       f1:false,
       f2:false,
       imageUrl: '',
@@ -122,7 +126,7 @@ export default {
       commentInfo:'',
       recommentInfo:'',
       showComInput:false,
-      showRecomInput:true
+      showRecomInput:false
     }
   },
   computed: {
@@ -142,6 +146,7 @@ export default {
       this.imageUrl='';
       this.showaddphoto=false;
       this.load();
+      this.$emit("tota",this.total);
     }
   },
   mounted() {
@@ -159,6 +164,7 @@ export default {
       let data={commentId:this.commentInfo.id,status:s,content:this.input,userId:userId,pid:this.recommentInfo.id};
       await this.$requst.commentHttp.handlePostRecomment(data);
       this.f2=!this.f2;
+      // this.$refs.op1.scrollIntoView()
       this.$message.success("评论成功");
     },
     async postC(){
@@ -170,17 +176,20 @@ export default {
       let data={commentId:this.commentInfo.id,status:s,content:this.input,userId:userId,pid:null};
       await this.$requst.commentHttp.handlePostRecomment(data);
       this.f1=!this.f1;
+      // this.$refs.op1.scrollIntoView()
       this.$message.success("评论成功");
     },
     postRe(comment){
       this.commentInfo=comment;
       this.showRecomInput=false;
       this.showComInput=true;
+      this.co=false;
       // console.log(comment);
     },
     postRe1(comment,recomment){
       // console.log(comment);
       // console.log(recomment)
+      this.co=false
       this.commentInfo=comment;
       this.recommentInfo=recomment;
       this.showComInput=false;

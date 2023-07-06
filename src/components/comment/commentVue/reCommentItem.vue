@@ -27,7 +27,7 @@
           <el-col :span="11"><div><font color="gray" size="2" style="margin-top: 10px"> {{item.createTime}}&nbsp;&nbsp;&nbsp;&nbsp;</font></div></el-col>
           <el-col :span="13">
             <div v-if="admin">
-              <i @click="dialogVisible=true" style="scale: 1.25" class="el-icon-message">{{cout}}</i>
+              <i @click="dialogVisible=true;show=!show" style="scale: 1.25" class="el-icon-message">{{cout}}</i>
             </div>
             <div v-else>
               <i @click="post" style="scale: 1.25" class="el-icon-message">{{cout}}</i>
@@ -37,21 +37,42 @@
         </el-row>
       </el-col>
     </el-row>
-    <div v-if="admin">    <el-dialog
-        title="提示"
-        :visible.sync="dialogVisible"
-        width="30%"
-        append-to-body>
-      <el-row>
-        <el-col :span="20">
-          <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>
-        </el-col>
-      </el-row>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="cleanOpst">取 消</el-button>
-    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>
-  </span>
-    </el-dialog></div>
+    <div v-if="admin">
+<!--      <el-dialog-->
+<!--        title="提示"-->
+<!--        :visible.sync="dialogVisible"-->
+<!--        width="30%"-->
+<!--        append-to-body>-->
+<!--      <el-row>-->
+<!--        <el-col :span="20">-->
+<!--          <el-input placeholder="输入内容" v-model="input" style="width: 90%"></el-input>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--    <el-button @click="cleanOpst">取 消</el-button>-->
+<!--    <el-button type="primary" @click="handlePostRecomment">确 定</el-button>-->
+<!--  </span>-->
+<!--    </el-dialog>-->
+      <div v-if="show" style="transform: translate(-110px);position: fixed;z-index: 200;bottom: 0;width: 30%;background-color: white;border-radius: 5px">
+        <el-row :gutter="20">
+          <el-col :span="14">
+            <div style="margin-top: 20px;margin-left: 10px">
+              <el-input v-model="input"   maxlength="80" show-word-limit :placeholder="'回复给:'+userInfo.userName"  prefix-icon="el-icon-search"></el-input>
+            </div>
+          </el-col>
+          <el-col :span="6">
+            <div style="margin-top: 20px;margin-left: 10px">
+              <el-button type="primary" @click="handlePostRecomment" icon="el-icon-edit" round>发送</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div  style="margin-top: 29px;margin-left: 5px">
+              <i @click="input='';show=false" style="scale: 2.1" class="el-icon-circle-close"></i>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,6 +85,7 @@ export default {
   props:["item","comment","admin"],
   data(){
     return{
+      show:false,
       dialogVisible: false,
       userInfo:null,
       pUserInfo:null,
